@@ -1,0 +1,65 @@
+.THIS .inputContainer{
+    margin-bottom: 10px;
+    padding: 12px;
+    background-color: #e0e0e0;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    
+}
+
+.THIS .registration-input label{
+    font-weight: bold;
+}
+
+.THIS .input1{
+    font-size: 1.5em;
+}
+
+/*
+.THIS .registration-input .slds-form-element__control{
+width: 90%;
+
+}
+*/
+.THIS .registration-input .slds-input{
+    margin-left: 10px;
+    margin-top: 3px;
+    border: 0 solid transparent;
+    -webkit-appearance: none;
+    min-height: initial;
+    /*background-color: #000;*/
+    background-color: inherit;
+    /*display: inline-block;
+    float: left;*/
+
+}
+
+.THIS .registration-input.slds-has-error .slds-input{
+    box-shadow: none;
+}
+
+.THIS .registration-input .slds-input:focus, .THIS .registration-input .slds-input:active{
+    outline: none;
+    box-shadow: none;
+}
+
+.THIS .registration-input .slds-checkbox--faux{
+    border-color: #ccc;
+}
+
+.THIS .modal-close-btn{
+    border: none;
+    padding: 0;
+    box-shadow:none;
+}
+.THIS .modal-close-btn .slds-button__icon{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.THIS .registration-successful{
+    font-size: 1.2rem;
+}
+.THIS .check-email{
+    font-size: 0.9rem;
+}

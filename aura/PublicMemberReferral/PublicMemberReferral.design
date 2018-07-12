@@ -1,0 +1,26 @@
+<design:component label="Fielo MR - Member Referral (Public)">
+ 
+    <design:attribute label="Email tool" name="emailTool" 
+                      description="Choose the preferred e-mail tool" datasource="SendGrid,Salesforce,Open email app"/>
+    
+    <design:attribute label="Custom Setting - Inbound Link" name="customSettingIn" />
+    <design:attribute label="Custom Setting - Outbound Link" name="customSettingOut" />
+    <design:attribute label="Custom Setting - Email Setup" name="customSettingMessages" />
+
+    <design:attribute label="Community url" name="communityURL" 
+                      description="Enter the url of the community." datasource="apex://customCommunitiesPicklist"/>
+    
+    <design:attribute label="Registration Page Name" name="pageName" />
+    
+    <design:attribute label="Member Creation - External Class" name="MemberCreationExternalClass" />
+    <design:attribute label="Link Shortener - External Class" name="LinkShortenerClass" />
+    
+    <design:attribute name="showFB" label="Facebook" />
+    <design:attribute name="showEmail" label="Email" />
+    <design:attribute name="showTW" label="Twitter" />
+    <design:attribute name="showWP" label="Whatsapp" />
+    <design:attribute name="showLK" label="Linkedin" />
+    <design:attribute name="showGO" label="Google+" />
+    <design:attribute name="showVI" label="Viber" />
+    
+</design:component>
