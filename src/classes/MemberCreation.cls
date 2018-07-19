@@ -3,6 +3,6 @@ global interface MemberCreation{
     // Response has the following structure:
     // success ----> [Id][MemberId]
     // Error ----> [Id][messageError]
-    Map<String, String> createMembers(Set<Id> recordsIds);
+    Map<String, String> createMembers(Set<Id> recordsIds, Id programId);
     
 }

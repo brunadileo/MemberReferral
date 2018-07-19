@@ -1,40 +1,28 @@
-({
+({    
     doInit: function(cmp, event, helper){
-        cmp.set("v.url",window.location.href);   
-        var emailSetup = cmp.get("v.customSettingMessages"); console.log(emailSetup);
-        var setup = cmp.get("v.customSettingIn");
-        var cs = setup.split(',');
-
-        //get the params choosen by the admin
-        var action = cmp.get("c.getParams");
+        var url = window.location.href; console.log(url);
+        var queryString = url.split('?')[1]; console.log(queryString);
+        
+        var action = cmp.get("c.queryMember");
         action.setParams({
-            fieldname: cs[0],
-            quant:cs[1],
-            emailSetup: emailSetup
+            url:queryString,
+            inboundSetup:cmp.get("v.customSettingIn"),
+            memberCreationClass:cmp.get("v.MemberCreationExternalClass")
         })
         action.setCallback(this, function(response) {
             var state = response.getState();           
             if (state === "SUCCESS") { 
-                var params = JSON.parse(response.getReturnValue());
-                console.log(params);
-                cmp.set("v.socialmedia",params.socialmedia);
-                cmp.set("v.emailsubject",params.subject);
-                cmp.set("v.emailbody",params.body);   
-                helper.continueInit(cmp,event,helper,params);
+                var res = response.getReturnValue(); console.log(res);
+                cmp.set("v.member",res);
+                helper.openComponent(cmp, event, helper);
             }else if (state === "ERROR") {
-                var errors = response.getError();
-                if (errors) {
-                    console.log("Error message: " + errors[0].message);
+                if (response.getError()) {
+                    console.log("Error message: " + response.getError()[0].message);
                 }
-            } else {
-                console.log("Unknown error");
-            }
-            
+            }             
         });
         $A.enqueueAction(action);
         
-    },
-    
-    
+    }
     
 })

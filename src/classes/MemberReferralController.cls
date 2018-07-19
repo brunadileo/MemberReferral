@@ -1,5 +1,32 @@
 public class MemberReferralController {
-/*@AuraEnabled
+    @AuraEnabled
+    public static String getMember(){
+        
+        String user = UserInfo.getUserId();
+        
+        if(String.isNotBlank(user)){
+            FieloPLT__Member__c[] members = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c 
+                                             WHERE FieloPLT__User__c =:user];
+            
+            if(members.size() == 1){
+                return members[0].Id;	                
+            }else if(members.size() > 1){
+                FieloPLT__Settings__c settings = FieloPLT__Settings__c.getInstance(UserInfo.getUserId());
+                System.debug('member: '+ settings.CurrentMemberId__c);
+                String res = (String)settings.CurrentMemberId__c;
+                return res;
+            }else{
+                return null;
+            }
+        }else{
+                return null;
+            }
+    }
+    
+    
+    
+    
+    /*@AuraEnabled
 public static String sendMail(List<String> emails, String subject, String message,String templateName) { 
 Id templateId;
 List<String> subjects = new List<String>();
@@ -74,7 +101,7 @@ System.debug(csMap);
 return JSON.serialize(csMap);        
 }*/
     
-//TESTE    
+    //TESTE    
     /* @isTest static void testSendEmail(){
 List<String> emails = new List<String>();
 emails.add('test@test.com');

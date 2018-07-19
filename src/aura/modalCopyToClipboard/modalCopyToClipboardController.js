@@ -1,53 +1,17 @@
 ({
-    
-    doInit2: function(cmp, event, helper){
-        var url = cmp.get("v.url"); console.log(url);
-        var memberId = cmp.get("v.memberMap.Id");  console.log('memberId: '+memberId);       
-        var program = cmp.get("v.memberMap.FieloPLT__Program__c"); console.log('program: '+program);
-        
-        var link = url+'registration?member='+memberId+'&prog='+program;
-        cmp.set("v.completeURL",link);
-        console.log(link);
-        
-        var emailTemplate = cmp.get("v.emailTemplate"); console.log(emailTemplate);
-        var sendEmail = cmp.get("v.sendEmail"); console.log('sendEmail: '+ sendEmail);
-        
-        var action = cmp.get("c.getShortLink2");
-        action.setParams({
-            url: link
-        });
-        
-        action.setCallback(this, function(response) {
-            var state = response.getState();
-            if (state === "SUCCESS") {    
-                console.log("Shortened Link: " + response.getReturnValue());
-                cmp.set("v.shortURL",response.getReturnValue());                  
-            }
-        });
-        $A.enqueueAction(action);
-        
-        
-    },
-    
+  
     doInit: function(cmp, event, helper){        
-        var url = cmp.get("v.communityURL"); //console.log('LEITURA: '+url);
-        var pagename = cmp.get("v.pageName");
-        var classname = cmp.get("v.LinkShortenerClass");
-        var emailSetup = cmp.get("v.customSettingMessages");
-        var setup = cmp.get("v.customSettingOut");
-        var cs = setup.split(',');
         
-        var action = cmp.get("c.getParamsSendLink");
+        var action = cmp.get("c.getParams");
         action.setParams({
-            fieldname: cs[0],
-            quant:cs[1],
-            memberId:cmp.get("v.member")
+            outboundSetup:cmp.get("v.customSettingOut"),
+            member:cmp.get("v.member")
         })
         action.setCallback(this, function(response) {
             var state = response.getState();           
             if (state === "SUCCESS") { 
                 var params = JSON.parse(response.getReturnValue());
-                console.log(params);
+                console.log(params); 
                 helper.continueInit(cmp,event,helper,params);
             }else if (state === "ERROR") {
                 var errors = response.getError();
@@ -61,26 +25,6 @@
         });
         $A.enqueueAction(action);
         
-        
-        
-       /* if(url && classname){
-            var action = cmp.get("c.getShortLink");
-            action.setParams({
-                url: link,
-                classname:classname
-            });            
-            action.setCallback(this, function(response) {
-                var state = response.getState();
-                if (state === "SUCCESS") {    
-                    console.log("Shortened Link: " + response.getReturnValue());
-                    cmp.set("v.shortURL",response.getReturnValue());                  
-                }
-            });
-            $A.enqueueAction(action);
-            
-        }else if (url && (useLinkShortener == false)){
-            cmp.set("v.shortURL",link)
-        }*/
     },
     
     clickCopyButton: function(cmp, event, helper) {
@@ -93,8 +37,11 @@
             console.log(e);
         });
         
-        helper.showMyToast(cmp, event, helper);
-        
+        if(cmp.get("v.shortURL")){
+        	helper.showMyToast(cmp, event, helper, 'success');
+        }else{
+            helper.showMyToast(cmp, event, helper, 'error');
+        }
     },
     
     clickFBButton: function(cmp, event, helper) {

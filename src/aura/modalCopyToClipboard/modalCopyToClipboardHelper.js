@@ -1,11 +1,16 @@
 ({
-    showMyToast : function(component, event, helper) {
+    showMyToast : function(component, event, helper, type) {
         var device = component.get("v.device");
         var success = {"type": "success", "message": $A.get("$Label.c.CopytoClipboardSuccess") };
+        var error = {"type": "error", "message": "Error trying to create link" };
         
         var toastEvent = $A.get("e.force:showToast");
-        toastEvent.setParams(success);  
-        toastEvent.fire();
+        if(type == 'success'){
+        	toastEvent.setParams(success); 
+        }else{
+            toastEvent.setParams(error);
+        }
+        toastEvent.fire(); 
 
     },
     

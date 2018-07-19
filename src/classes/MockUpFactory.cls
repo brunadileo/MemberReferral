@@ -9,7 +9,7 @@ public class MockUpFactory {
         }
         return results;
     }
-    
+        
     public static List<FieloPLT__Member__c> createMembers(String programId, Integer count){
         List<FieloPLT__Member__c> membersToCreate = new List<FieloPLT__Member__c>();
         for(Integer x = 0; x < count; x++){
@@ -30,12 +30,40 @@ public class MockUpFactory {
             contactsToCreate.add(new Contact(
                 FirstName='NoMember',
                 LastName='Contact '+String.valueOf(x),
-                Email='email'+String.valueOf(x)+'l@example.com'               
+                Email='email_'+String.valueOf(x)+'lah@example.com'               
             )
                                 );
         }
         return contactsToCreate;
     }
+    
+    public static List<FieloPLT__Member__c> createMemberwithContact(String programId,Integer count){
+        List<Contact> contacts = new List<Contact>();
+        for(Integer x = 0; x < count; x++){
+            contacts.add(new Contact(
+                FirstName='Member',
+                LastName='Contact '+String.valueOf(x),
+                Email='email'+String.valueOf(x)+'l@example.com'               
+            )
+                                );
+        }
+        insert contacts; System.debug(contacts);
+        
+        List<FieloPLT__Member__c> membersToCreate = new List<FieloPLT__Member__c>();
+        for(Integer x = 0; x < count; x++){
+            membersToCreate.add(new FieloPLT__Member__c(
+                Name='Member '+String.valueOf(x),
+                FieloPLT__Email__c='email'+String.valueOf(x)+'l@example.com',
+                FieloPLT__Type__c='Individual Account',
+                FieloPLT__Program__c=programId,
+                FieloPLT__Contact__c = contacts[x].Id
+            )
+                               );
+        }
+        return membersToCreate;
+
+    }
+    
     
     public static List<User> createUsers(Integer count){
         List<User> users = new List<User>();

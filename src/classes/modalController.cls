@@ -1,67 +1,76 @@
 public class modalController {
+       
+    @AuraEnabled
+    public static String getParams(String outboundSetup, String member){
+        System.debug(member);
+        List<String> outboundList = outboundSetup.split(',');
+        Map<String,String> paramsMap = new Map<String,String>();
+        List<String> fieldApiNames =  new List<String>();
+        String ObjectApiName;
+        
+        Boolean memberProcess = false;
+        Boolean hasMemberLookup = false;
+        
+        for(String outboundRecord: outboundList){
+            ParametersSettings__c ps = ParametersSettings__c.getInstance(outboundRecord);	System.debug(ps.Parameter__c);
+            if(ps.ObjectApiName__c == 'FieloPLT__Member__c'){
+                if(ps.FieldApiName__c == 'Id'){
+                    paramsMap.put(ps.Parameter__c,ps.FieldApiName__c);                    
+                }else{
+                    memberProcess = true;
+                    paramsMap.put(ps.Parameter__c,ps.FieldApiName__c);	System.debug(paramsMap);
+                    fieldApiNames.add(ps.FieldApiName__c);  
+                }
+            }else{
+                hasMemberLookup = true;
+            }
+        }
+        
+        if(memberProcess){            
+            String fields = String.join(fieldApiNames,',');
+            String query = 'SELECT '+fields+ ' FROM FieloPLT__Member__c WHERE Id =: member'; System.debug(query);
+            FieloPLT__Member__c m = Database.query(query); 
+            for(String parameter : paramsMap.keySet()){
+                paramsMap.put(parameter,(String)m.get(paramsMap.get(parameter)));
+            }
+        }
+         
+        if(hasMemberLookup){
+            return findRelatedInfo(outboundList,paramsMap, member);
+        }else{
+            return JSON.serialize(paramsMap);
+        }
+        
+    }
+    
+    public static String findRelatedInfo(String[] outboundList, Map<String,String> paramsMap, String member){
+        String obj;
+        String qWhere;
+        Map<String,String> fieldsMap = new Map<String,String>();
+        for(String o: outboundList){
+            ParametersSettings__c ps = ParametersSettings__c.getInstance(o);	System.debug(ps.Parameter__c);
+            if(String.isNotBlank(ps.LookupRelationship__c)){                
+                fieldsMap.put(ps.Parameter__c,ps.FieldApiName__c);	System.debug(fieldsMap);
+                obj = ps.ObjectApiName__c;
+                qWhere = ps.LookupRelationship__c;
+            }
+        }
+        String fields = String.join(fieldsMap.values(),',');
+        String query = 'SELECT '+fields+ ' FROM '+obj+' WHERE '+qWhere+' =: member'; System.debug(query);
+        sObject sobj = Database.query(query);
+        for(String field : fieldsMap.keySet()){
+            paramsMap.put(field,(String)sobj.get(fieldsMap.get(field)));
+        }
+        
+        return JSON.serialize(paramsMap);
+        
+    }
     
     @AuraEnabled
     public static String getShortLink(String url,String classname){        
         Type t = Type.forName(classname);
         LinkShortener link = (LinkShortener)t.newInstance();                
         return link.shortenLink(url);
-    }
-    
-    @AuraEnabled
-    public static String getParamsSendLink(String fieldname,Integer quant, String memberId){  
-        MemberReferral__c cs = MemberReferral__c.getInstance(fieldname);
-        Map<String,String> csMap = new Map<String,String>();
-        Integer i;
-        for(i = 1; i <= quant; i++){
-            System.debug(i);
-            if(cs.get('Parameter'+i+'__c') != null){
-                System.debug(cs.get('Parameter'+i+'__c'));
-                if(cs.get('Field'+i+'__c').toString().contains(',')){
-                    System.debug(cs.get('Field'+i+'__c').toString());
-                    String[] temp =  cs.get('Field'+i+'__c').toString().split(',');
-                    if(temp[0].contains('__c')){
-                        csMap.put(cs.get('Parameter'+i+'__c').toString(),temp[0].substringBeforeLast('__c')+'__r.'+temp[1]);
-                        //csMap.put(cs.get('Parameter'+i+'__c').toString(),cs.get('Field'+i+'__c').toString());
-                    }
-                }else{
-                    csMap.put(cs.get('Parameter'+i+'__c').toString(),cs.get('Field'+i+'__c').toString());
-                }
-            }
-        }
-        System.debug(csMap);
-        
-        String fieldsList = 'Id';
-        for(String p: csMap.values()){
-            if((p != 'Id')){
-                fieldsList += (','+p);  
-            }            
-        }
-        
-        System.debug(fieldsList);
-        
-        String query = 'SELECT ' + fieldsList +' FROM FieloPLT__Member__c WHERE Id =: memberId LIMIT 1';
-        System.debug(query);
-        
-        sObject member = Database.query(query);
-        System.debug(member);
-        Map<String,Object> resultMap = new Map<String,Object>();
-        for (String p: csMap.keySet()){
-            String[] temp = fieldsList.split(',');
-            for(i=0;i< temp.size();i++){
-                if(csMap.get(p).contains('.')){
-                    String[] objField = csMap.get(p).split('\\.');
-                    System.debug(member.getSObject(objField[0]).get(objField[1]));
-                    if(csMap.get(p) == temp[i].trim() && (member.getSObject(objField[0]).get(objField[1]) != null) ){ 
-                        resultMap.put(p,member.getSObject(objField[0]).get(objField[1]));                                      
-                    }
-                }else if(csMap.get(p) == temp[i].trim() && (member.get(temp[i].trim()) != null)){
-                    resultMap.put(p,member.get(temp[i].trim()));
-                }
-            }
-        }
-        
-        System.debug(resultMap);
-        return JSON.serialize(resultMap); 
     }
     
 }
