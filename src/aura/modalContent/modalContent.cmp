@@ -1,0 +1,21 @@
+<aura:component controller="modalController" >
+    
+    <aura:attribute name="message" type="String"/>
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="completeURL" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="emailTemplate" type="String"/>
+    <aura:attribute name="memberMap" type="Map" />
+    <aura:attribute name="email" type="String"/>
+    <aura:attribute name="sendEmail" type="String"/>  
+    
+    <lightning:overlayLibrary aura:id="modal"/>
+    
+    <lightning:textarea label="Referal Emails" name="email" value="{!v.email}"
+                        placeholder="Enter as many emails as you want, separated by coma (,)"/>
+    <br />
+    
+        <lightning:button name="modalButton" variant="brand" label="Send message" onclick="{!c.chooseMailTool}" />
+ 
+</aura:component>
