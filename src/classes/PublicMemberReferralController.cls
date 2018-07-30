@@ -138,5 +138,28 @@ public class PublicMemberReferralController {
         }
     }
                
+    public static String currentMemberId{get;set;}
+    
+	@auraEnabled    
+    public static String setMember(String memberId){
+       FieloPLT__Settings__c settings = FieloPLT__Settings__c.getInstance(UserInfo.getUserId());
+       settings.CurrentMemberId__c = memberId;
+       upsert settings;
+        
+       return  settings.CurrentMemberId__c;
+    }
+    
+    @auraEnabled    
+    public static String setMemberbyUser(){
+        String userId = UserInfo.getUserId();
+        
+        if(String.isNotBlank(userId)){
+        	FieloPLT__Member__c[] m = [SELECT Id FROM FieloPLT__Member__c WHERE FieloPLT__User__c =: userId];
+            return m[0].Id;
+        }else{
+            return null;
+        }
+        
+    }
     
 }

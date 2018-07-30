@@ -78,7 +78,7 @@ public class PublicMemberReferralControllerTest {
         FieloPLT__Program__c p = [SELECT Id FROM FieloPLT__Program__c LIMIT 1];
 
         String url = 'language=en&spiceid='+contacts[0].SpiceID__c;          System.debug(url);
-        String result = PublicMemberReferralController.queryMember(url,'InboundLink','MemberCreationTest');
+        String result = PublicMemberReferralController.queryMember(url,'InboundLink','TryMemberCreation');
         
         FieloPLT__Member__c m = [SELECT Id FROM FieloPLT__Member__c WHERE FieloPLT__Contact__r.SpiceID__c ='123abcNoMember' ]; 
         String expected = m.Id;

@@ -1,144 +1,189 @@
-public class MemberReferralController {
+public without sharing class MemberReferralController {
     @AuraEnabled
-    public static String getMember(){
+    public static String queryMember(String url, String inboundSetup, String memberCreationClass){
+        String[] urlParams = url.split('&');
+        Map<String,String> paramsMap = new Map<String,String>();
+        for(String s : urlParams){
+            String[] temp = s.split('=');
+            paramsMap.put(temp[0], temp[1]); // paramsMap: {parameterName: relatedData};
+        }
+        System.debug(paramsMap);
         
-        String user = UserInfo.getUserId();
+        //change it to see if its Id, if not query to find result - Id of member
+        String[] inboundList = inboundSetup.split(',');
+        Boolean memberProcess = false;
+        String parameter, qWhere;
+        for(String i: inboundList){
+            ParametersSettings__c ps = ParametersSettings__c.getInstance(i);	
+            if(ps.ObjectApiName__c == 'FieloPLT__Member__c' && paramsMap.keySet().contains(ps.Parameter__c)){
+                memberProcess = true;
+                parameter = ps.Parameter__c;
+                qWhere = ps.FieldApiName__c;  
+            }
+        }
+        System.debug(inboundList);
         
-        if(String.isNotBlank(user)){
-            FieloPLT__Member__c[] members = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c 
-                                             WHERE FieloPLT__User__c =:user];
+        String fields = 'Id';
+        if(memberProcess){
+            String value = (String)paramsMap.get(parameter);
+            if(qWhere != fields){
+                fields += (', '+qWhere);
+            }
+            String query = 'SELECT '+fields+ ' FROM FieloPLT__Member__c WHERE '+qWhere+'=: value'; System.debug(query);
+            FieloPLT__Member__c m = Database.query(query);        System.debug(m);
             
-            if(members.size() == 1){
-                return members[0].Id;	                
-            }else if(members.size() > 1){
-                FieloPLT__Settings__c settings = FieloPLT__Settings__c.getInstance(UserInfo.getUserId());
-                System.debug('member: '+ settings.CurrentMemberId__c);
-                String res = (String)settings.CurrentMemberId__c;
-                return res;
-            }else{
-                return null;
-            }
+            return m.Id;
         }else{
-                return null;
-            }
+            return findRelatedMember(paramsMap,inboundList, memberCreationClass);
+        }
+        
     }
     
+    public static String findRelatedMember(Map<String,String> paramsMap, String[] inboundList, String memberCreationClass){
+      
+        String programId, lookupRelationship;
+        Map<String,String> createMemberMap = new Map<String,String>();
+        
+        //{ObjectApiName__c: {FieldApiName__c(1): fieldValue(1), FieldApiName__c(2): fieldValue(2)}}
+        Map<String,Map<String,String>> objFields = new Map<String,Map<String,String>>();
+        
+        //iterate over the Inbound link Setup (list of custom settings)        
+        for(String i: inboundList){
+            ParametersSettings__c ps = ParametersSettings__c.getInstance(i);
+            if(paramsMap.keySet().contains(ps.Parameter__c)){
+                if(String.isNotBlank(ps.LookupRelationship__c)){
+                    lookupRelationship = ps.LookupRelationship__c;    System.debug(lookupRelationship);                 
+                    Map<String,String> fields = new Map<String,String>();                    
+                    fields.put(ps.FieldApiName__c, paramsMap.get(ps.Parameter__c)); System.debug(fields);
+                    createMemberMap.put('field','Id');
+                    createMemberMap.put('object',ps.ObjectApiName__c);
+                    if(objFields.keySet().contains(ps.ObjectApiName__c)){
+                        Map<String,String> temp = objFields.get(ps.ObjectApiName__c);
+                        temp.put(ps.FieldApiName__c, paramsMap.get(ps.Parameter__c)); 
+                    }else{
+                        objFields.put(ps.ObjectApiName__c,fields);
+                    }
+                }else if(ps.ObjectApiName__c == 'FieloPLT__Program__c'){
+                    programId = paramsMap.get(ps.ObjectApiName__c);
+                }
+            }else{
+                //if the parameter that is in the property is not in the link, the code should ignore it and continue
+                continue; 
+            } 
+        }
+        
+        //checks if there is Inbound Link config has a object with Member Lookup Field
+        //create the query and do the check
+        String fieldset = lookupRelationship;
+        String obj, objWhere;
+        
+        if(!objFields.isEmpty()){
+            for(String s: objFields.keySet()){ 
+                obj = s; System.debug(obj);
+                Map<String,String> fieldList = new Map<String,String>(objFields.get(s));
+                for(String field : fieldList.keySet()){
+                    String o = fieldList.get(field);
+                    if(fieldset == null){ 
+                        fieldset = (field + ' ,');
+                    }else{ 
+                        fieldset += (' ,'+ field); 
+                    }
+                    
+                    if(objWhere == null){
+                        objWhere = (field + ' =: o AND '); 
+                    }else{ 
+                        objWhere += (field + ' =: o AND '); 
+                    }
+                }
+            }
+            fieldset = fieldset.substringBeforeLast(' ,');
+            objWhere = objWhere.substringBeforeLast(' AND ');
+            
+        }else{
+            return null;
+        }
+        String objQuery = 'SELECT '+fieldset+' FROM '+obj + ' WHERE '+ objWhere ;
+        System.debug(objQuery);
+        
+        sObject sobj;
+        String memberId;
+        try{
+            sobj = Database.query(objQuery); System.debug(sobj);
+            memberId = (String)sobj.get(lookupRelationship); System.debug(memberId);
+            createMemberMap.put('value',sobj.Id);        System.debug(createMemberMap);
+        }catch(Exception e){
+            sobj = null;
+            memberId =null;
+        }
+        
+        if(String.isNotBlank(memberId)){
+            return memberId;
+        }else{
+            System.debug(createMemberMap);  
+            try{
+                return createMember(memberCreationClass, createMemberMap, programId);
+            }catch(Exception e){
+                FieloPLT__ErrorLog__c errorLogToAdd = new FieloPLT__ErrorLog__c();
+                errorLogToAdd.FieloPLT__Message__c = e.getMessage();
+                errorLogToAdd.FieloPLT__LineNumber__c = e.getLineNumber();  
+                insert errorLogToAdd ;
+                return e.getMessage();
+            }
+        }
+        
+    }
     
+    public static String createMember(String classNameComplete, Map<String,String> createMemberMap, Id programId){
+        System.debug(classNameComplete);
+        System.debug(createMemberMap);
+        System.debug(programId);
+        String[] classNameList;
+        String namespace, className;
+        
+        if(classNameComplete.contains(',')){
+            classNameList = classNameComplete.split(',');
+            namespace = classNameList[0]; 
+            className = classNameList[1]; 
+        }else{
+            namespace = null; 
+            className = classNameComplete; 
+        }
+        
+        try{
+            Type t = Type.forName(namespace,className);
+            MemberCreation msInstance = (MemberCreation)t.newInstance();
+            Map<String, String> createdMembers = msInstance.createMembers(new Set<Id>{createMemberMap.get('value')},programId);
+            String createdMember = createdMembers.values()[0];
+            return createdMember;
+        }catch(Exception e){
+            FieloPLT__ErrorLog__c errorLogToAdd = new FieloPLT__ErrorLog__c();
+            errorLogToAdd.FieloPLT__Message__c = e.getMessage();
+            errorLogToAdd.FieloPLT__LineNumber__c = e.getLineNumber();
+            insert errorLogToAdd ;
+            return e.getMessage();
+        }
+        
+    }
     
+    @auraEnabled    
+    public static String setMember(String memberId){
+        FieloPLT__Settings__c settings = FieloPLT__Settings__c.getInstance(UserInfo.getUserId());
+        settings.CurrentMemberId__c = memberId;
+        upsert settings;
+        
+        return  settings.CurrentMemberId__c;
+    }
     
-    /*@AuraEnabled
-public static String sendMail(List<String> emails, String subject, String message,String templateName) { 
-Id templateId;
-List<String> subjects = new List<String>();
-subjects.add(subject); 
-List<String> messages = new List<String>();
-messages.add(message);
-if(templateName != null){
-templateId = [SELECT Id FROM EmailTemplate WHERE DeveloperName =: templateName].Id; System.debug('templateId:'+templateId);
-}
-EmailManager.sendMail(emails, subjects,messages,templateId);
-return 'Email sent!';
-}
-
-@AuraEnabled
-public static FieloPLT__Member__c getMember(){
-FieloPLT__Settings__c settings = FieloPLT__Settings__c.getInstance(UserInfo.getUserId());
-System.debug('member: '+ settings.CurrentMemberId__c);
-if(settings.CurrentMemberId__c !=null){
-FieloPLT__Member__c m = [SELECT Id, Name, FieloPLT__Program__c,FieloPLT__Program__r.Name FROM FieloPLT__Member__c 
-WHERE Id =:settings.CurrentMemberId__c];
-
-return m;
-}else{
-FieloPLT__Member__c m = [SELECT Id, Name, FieloPLT__Program__c FROM FieloPLT__Member__c 
-WHERE Name = 'Test Member'];
-return m;
-}
-
-
-}*/
-    
-    /*@AuraEnabled
-public static String sgSendMail(List<String> emails,String emailTemplate, Map<String,String> p){
-EmailTemplate et = [SELECT Id,Name,DeveloperName,Subject,Body,HTMLValue FROM EmailTemplate 
-WHERE DeveloperName =: emailTemplate];
-sendgrid2Mail sg = new sendgrid2Mail();
-sendgrid2Mail.EmailData emaildata = new sendgrid2Mail.EmailData();
-
-emaildata = sg.getEmailData(et,emails,null,p);
-HttpResponse res = sendgrid2Mail.makeSendCallout(emaildata);
-System.debug('res.getStatus(): '+res.getStatus());
-return res.getStatus();        
-
-}*/
-    
-    
-    /*@AuraEnabled
-public static String getShortLink2(String url){        
-BitlyIntegration2 b = new BitlyIntegration2();
-String shortUrl = b.shortenLink(url);
-return shortUrl;
-
-}
-
-@AuraEnabled
-public static String getParams(String fieldname,Integer quant, String emailSetup){
-System.debug(quant);        
-MemberReferral__c cs = MemberReferral__c.getInstance(fieldname);
-Map<String,String> csMap = new Map<String,String>();
-Integer i;
-for(i = 1; i <= quant; i++){
-System.debug(i);            
-csMap.put(cs.get('Parameter'+i+'__c').toString(),cs.get('Field'+i+'__c').toString());
-}
-if(emailSetup != null){
-MemberReferral__c cs2 = MemberReferral__c.getInstance(emailSetup);
-csMap.put('subject',cs2.get('EmailSubject__c').toString());
-csMap.put('body',cs2.get('EmailBody__c').toString());        
-csMap.put('socialmedia',cs2.get('SocialMediaMessage__c').toString());
-}
-System.debug(csMap);
-return JSON.serialize(csMap);        
-}*/
-    
-    //TESTE    
-    /* @isTest static void testSendEmail(){
-List<String> emails = new List<String>();
-emails.add('test@test.com');
-String subject = 'Test subject';
-String message = 'Test message';
-
-String resp = modalController.sendMail(emails,subject,message);
-System.assertEquals('Email sent!', resp);
-}
-
-@isTest static void testGetMember(){
-Id p = [select id from profile where name='Fielo Partner Community User'].Id;
-
-Account ac = new Account(name ='TestAcc') ;
-insert ac; 
-
-Contact con = new Contact(LastName ='testCon',AccountId = ac.Id);
-insert con;  
-
-User user = new User(alias = 'test123', email='test123@noemail.com',
-emailencodingkey='UTF-8', lastname='Testing', languagelocalekey='en_US',
-localesidkey='en_US', profileid = p, country='United States',IsActive =true,
-ContactId = con.Id,
-timezonesidkey='America/Los_Angeles', username='tester@noemail.com'+ System.currentTimeMillis());
-
-insert user;
-
-System.debug('user: '+ user);
-
-System.runAs(user){
-
-System.debug('Current User: ' + UserInfo.getUserId());
-
-FieloPLT__Member__c m = modalController.getMember();
-System.assert(m !=null);
-}
-
-}*/
-    
+    @auraEnabled    
+    public static String setMemberbyUser(){
+        String userId = UserInfo.getUserId();
+        
+        if(String.isNotBlank(userId)){
+            FieloPLT__Member__c[] m = [SELECT Id FROM FieloPLT__Member__c WHERE FieloPLT__User__c =: userId];
+            return m[0].Id;
+        }else{
+            return null;
+        }
+        
+    }
 }

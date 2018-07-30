@@ -1,41 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
-        <members>BitlyIntegration2</members>
-        <members>EmailManager</members>
-        <members>EmailManagerTest</members>
-        <members>MemberCreation</members>
-        <members>MemberCreationTest</members>
-        <members>MemberReferralController</members>
-        <members>MockUpFactory</members>
-        <members>NewRegistrationController</members>
-        <members>NewRegistrationControllerTest</members>
-        <members>PublicMemberReferralController</members>
-        <members>PublicMemberReferralControllerTest</members>
-        <members>customCommunitiesPicklist</members>
-        <members>customObjectPicklist</members>
-        <members>customTemplatesPicklist</members>
-        <members>modalController</members>
-        <members>modalControllerTest</members>
+        <members>BitlyIntegration</members>
+        <members>TryMemberCreation</members>
+		<members>FieloMRF.MemberReferralController</members>
         <name>ApexClass</name>
     </types>
     <types>
-        <members>*</members>
-        <name>ApexTrigger</name>
-    </types>
-    <types>
-        <members>ActiveMember</members>
-        <members>MemberReferral</members>
-        <members>MemberReferralList</members>
-        <members>NewRegistrarion</members>
-        <members>PublicMemberReferral</members>
-        <members>modalContent</members>
-        <members>modalCopyToClipboard</members>
+        <members>loginForm</members>
         <name>AuraDefinitionBundle</name>
     </types>
     <types>
-        <members>*</members>
-        <name>LightningComponentBundle</name>
+        <members>Fielo MRF</members>
+        <name>ManagedTopics</name>
     </types>
     <version>43.0</version>
 </Package>

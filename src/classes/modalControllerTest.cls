@@ -42,7 +42,7 @@ public class modalControllerTest {
         String result = modalController.getParams('OutboundLink2', member[0].Id);
         
         Map<String,String> resMap = new Map<String,String>();
-		resMap.put('member',member[0].Id);
+		resMap.put('member','Id');
         System.assertEquals(result, JSON.serialize(resMap));
     }
     

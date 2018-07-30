@@ -1,8 +1,8 @@
-public class BitlyIntegration2 implements LinkShortener{
+public class BitlyIntegration implements LinkShortener{
     
     public String shortenLink(String url){
-        FieloPLT__PublicSettings__c	p = FieloPLT__PublicSettings__c.getInstance();
-        String apikey = p.BitlyAPIKey__c;
+        //FieloPLT__PublicSettings__c	p = FieloPLT__PublicSettings__c.getInstance();
+        String apikey = '98ad872f0bcb486037aab03f808749a5c1e64e24'; //p.BitlyAPIKey__c;
         
         HttpRequest req = new HttpRequest();
         req.setEndpoint(

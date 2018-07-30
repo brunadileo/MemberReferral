@@ -1,0 +1,147 @@
+warning: LF will be replaced by CRLF in src/aura/PublicMemberReferral/PublicMemberReferral.cmp.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in src/aura/PublicMemberReferral/PublicMemberReferral.design.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in src/aura/PublicMemberReferral/PublicMemberReferralHelper.js.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in src/aura/modalCopyToClipboard/modalCopyToClipboard.cmp.
+The file will have its original line endings in your working directory.
+[1mdiff --git a/src/aura/PublicMemberReferral/PublicMemberReferral.cmp b/src/aura/PublicMemberReferral/PublicMemberReferral.cmp[m
+[1mindex 18e844a..264da06 100644[m
+[1m--- a/src/aura/PublicMemberReferral/PublicMemberReferral.cmp[m
+[1m+++ b/src/aura/PublicMemberReferral/PublicMemberReferral.cmp[m
+[36m@@ -4,7 +4,7 @@[m
+     <ltng:require scripts="{!$Resource.Clipboard}" />[m
+     [m
+     <!--DESIGN RESOURCES-->[m
+[31m-     <!--DESIGN RESOURCES-->[m
+[32m+[m[41m    [m
+     <aura:attribute name="url" type="String"/>[m
+     [m
+     <aura:attribute name="customSettingIn" type="String" />[m
+[36m@@ -30,9 +30,7 @@[m
+     <!--OTHER VARIABLES-->    [m
+     <aura:attribute name="member" type="String" />[m
+     <aura:attribute name="mailto" type="String"/>[m
+[31m-        <aura:attribute name="socialmedia" type="String" default="{!$Label.c.SocialMediaMessage}"/>[m
+[31m-    <aura:attribute name="emailsubject" type="String" default="{!$Label.c.EmailSubject}"/>[m
+[31m-    <aura:attribute name="emailbody" type="String" default="{!$Label.c.EmailBody}"/>[m
+[32m+[m[41m        [m
+     [m
+     <!--EVENTS-->[m
+     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>[m
+[1mdiff --git a/src/aura/PublicMemberReferral/PublicMemberReferral.design b/src/aura/PublicMemberReferral/PublicMemberReferral.design[m
+[1mindex 4d7299a..1a406eb 100644[m
+[1m--- a/src/aura/PublicMemberReferral/PublicMemberReferral.design[m
+[1m+++ b/src/aura/PublicMemberReferral/PublicMemberReferral.design[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-<design:component label="Fielo MR - Member Referral (Public)">[m
+[32m+[m[32m<design:component label="Fielo RFL - Member Referral">[m
+  [m
+     <design:attribute label="Email tool" name="emailTool" [m
+                       description="Choose the preferred e-mail tool" datasource="SendGrid,Salesforce,Open email app"/>[m
+[1mdiff --git a/src/aura/PublicMemberReferral/PublicMemberReferralHelper.js b/src/aura/PublicMemberReferral/PublicMemberReferralHelper.js[m
+[1mindex 50c76c3..14ea56c 100644[m
+[1m--- a/src/aura/PublicMemberReferral/PublicMemberReferralHelper.js[m
+[1m+++ b/src/aura/PublicMemberReferral/PublicMemberReferralHelper.js[m
+[36m@@ -18,9 +18,7 @@[m
+                                "customSettingOut":cmp.getReference("v.customSettingOut"),[m
+                                "customSettingMessages":cmp.getReference("v.customSettingMessages"),[m
+                                "pageName":cmp.getReference("v.pageName"),  [m
+[31m-                               "socialmedia":cmp.getReference("v.socialmedia"),[m
+[31m-                               "emailsubject":cmp.getReference("v.emailsubject"), [m
+[31m-                               "emailbody":cmp.getReference("v.emailbody"), [m
+[32m+[m[41m                               [m
+                                [m
+                            },[m
+                            function(newComp, status, errorMessage){[m
+[1mdiff --git a/src/aura/modalCopyToClipboard/modalCopyToClipboard.cmp b/src/aura/modalCopyToClipboard/modalCopyToClipboard.cmp[m
+[1mindex 70c0c17..9544497 100644[m
+[1m--- a/src/aura/modalCopyToClipboard/modalCopyToClipboard.cmp[m
+[1m+++ b/src/aura/modalCopyToClipboard/modalCopyToClipboard.cmp[m
+[36m@@ -33,9 +33,9 @@[m
+     <aura:attribute name="completeURL" type="String"/>[m
+     <aura:attribute name="shortURL" type="String"/>[m
+     <aura:attribute name="mailto" type="String"/>[m
+[31m-    <aura:attribute name="socialmedia" type="String"/>[m
+[31m-    <aura:attribute name="emailsubject" type="String"/>[m
+[31m-    <aura:attribute name="emailbody" type="String"/>[m
+[32m+[m[32m    <aura:attribute name="socialmedia" type="String" default="{!$Label.c.SocialMediaMessage}"/>[m
+[32m+[m[32m    <aura:attribute name="emailsubject" type="String" default="{!$Label.c.EmailSubject}"/>[m
+[32m+[m[32m    <aura:attribute name="emailbody" type="String" default="{!$Label.c.EmailBody}"/>[m
+   [m
+     <!-- INITIALIZATION EVENTS-->[m
+     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>[m
+[1mdiff --git a/src/classes/BitlyIntegration2.cls b/src/classes/BitlyIntegration2.cls[m
+[1mindex ffb7f85..e69de29 100644[m
+[1m--- a/src/classes/BitlyIntegration2.cls[m
+[1m+++ b/src/classes/BitlyIntegration2.cls[m
+[36m@@ -1,32 +0,0 @@[m
+[31m-public class BitlyIntegration2 implements LinkShortener{[m
+[31m-    [m
+[31m-    public String shortenLink(String url){[m
+[31m-        FieloPLT__PublicSettings__c	p = FieloPLT__PublicSettings__c.getInstance();[m
+[31m-        String apikey = p.BitlyAPIKey__c;[m
+[31m-        [m
+[31m-        HttpRequest req = new HttpRequest();[m
+[31m-        req.setEndpoint([m
+[31m-            'https://api-ssl.bitly.com/v3/shorten?'+[m
+[31m-            'access_token='+ apikey + [m
+[31m-            '&longUrl=' + EncodingUtil.urlEncode(url, 'UTF-8')[m
+[31m-        );[m
+[31m-        req.setHeader('Accept','application/json');[m
+[31m-        req.setMethod('POST');[m
+[31m-        [m
+[31m-        Http http = new Http();[m
+[31m-        HttpResponse res = http.send(req);[m
+[31m-        [m
+[31m-        String shorturl;[m
+[31m-        JSONParser parser = JSON.createParser(res.getBody());[m
+[31m-        while (parser.nextToken() != null) {[m
+[31m-            if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) &&[m
+[31m-                (parser.getText() == 'url')) {[m
+[31m-                    parser.nextToken();[m
+[31m-                    shorturl = parser.getText();[m
+[31m-                    system.debug(shorturl);[m
+[31m-                }[m
+[31m-        }[m
+[31m-        return shorturl;[m
+[31m-        [m
+[31m-    }[m
+[31m-}[m
+\ No newline at end of file[m
+[1mdiff --git a/src/classes/BitlyIntegration2.cls-meta.xml b/src/classes/BitlyIntegration2.cls-meta.xml[m
+[1mindex e3ae5f2..e69de29 100644[m
+[1m--- a/src/classes/BitlyIntegration2.cls-meta.xml[m
+[1m+++ b/src/classes/BitlyIntegration2.cls-meta.xml[m
+[36m@@ -1,10 +0,0 @@[m
+[31m-<?xml version="1.0" encoding="UTF-8"?>[m
+[31m-<ApexClass xmlns="http://soap.sforce.com/2006/04/metadata">[m
+[31m-    <apiVersion>43.0</apiVersion>[m
+[31m-    <packageVersions>[m
+[31m-        <majorNumber>2</majorNumber>[m
+[31m-        <minorNumber>51</minorNumber>[m
+[31m-        <namespace>FieloPLT</namespace>[m
+[31m-    </packageVersions>[m
+[31m-    <status>Active</status>[m
+[31m-</ApexClass>[m
+[1mdiff --git a/src/classes/MemberCreationTest.cls b/src/classes/MemberCreationTest.cls[m
+[1mindex 64454c8..e69de29 100644[m
+[1m--- a/src/classes/MemberCreationTest.cls[m
+[1m+++ b/src/classes/MemberCreationTest.cls[m
+[36m@@ -1,29 +0,0 @@[m
+[31m-public class MemberCreationTest implements MemberCreation {[m
+[31m-    [m
+[31m-    public static Map<String, String> createMembers(Set<Id> cSet, Id programId){[m
+[31m-        [m
+[31m-        if(programId == null){[m
+[31m-            FieloPLT__Program__c p = [SELECT Id FROM FieloPLT__Program__c LIMIT 1];[m
+[31m-            programId = p.Id;[m
+[31m-        }[m
+[31m-        [m
+[31m-        Contact[] cList = [SELECT Id, FirstName, LastName, Email FROM Contact WHERE Id IN :cSet];[m
+[31m-        List<FieloPLT__Member__c> members = new List<FieloPLT__Member__c>();[m
+[31m-        [m
+[31m-        for(Integer i=0; i< cList.size();i++){[m
+[31m-            members.add(new FieloPLT__Member__c(Name= cList[i].Firstname + ' ' +cList[i].LastName,[m
+[

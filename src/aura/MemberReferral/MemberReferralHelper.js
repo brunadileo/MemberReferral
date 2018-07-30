@@ -1,6 +1,6 @@
 ({
     openComponent: function(cmp,event,helper){
-        $A.createComponent("c:modalCopyToClipboard",
+        $A.createComponent("c:ShareReferralLink",
                            {
                                "url":cmp.getReference("v.url"),
                                "showFB":cmp.getReference("v.showFB"),
@@ -16,12 +16,8 @@
                                "member":cmp.getReference("v.member"),
                                "customSettingIn":cmp.getReference("v.customSettingIn"),
                                "customSettingOut":cmp.getReference("v.customSettingOut"),
-                               "customSettingMessages":cmp.getReference("v.customSettingMessages"),
-                               "pageName":cmp.getReference("v.pageName"),  
-                               "socialmedia":cmp.getReference("v.socialmedia"),
-                               "emailsubject":cmp.getReference("v.emailsubject"), 
-                               "emailbody":cmp.getReference("v.emailbody"), 
-                               
+                               "pageName":cmp.getReference("v.pageName")  
+                              
                            },
                            function(newComp, status, errorMessage){
                                //Add the new button to the body array
