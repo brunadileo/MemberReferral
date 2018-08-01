@@ -57,8 +57,9 @@ public class MemberReferralControllerTest {
         Map<String,String> params = new Map<String,String>();
         String url = 'language=en&member='+m.Id;        
         String result = MemberReferralController.queryMember(url,'InboundLink2',null);
-        String expected = m.Id;
-        System.assertEquals(expected, result);
+        Map<String,String> resMap = new Map<String,String>();
+        resMap.put('member', m.Id);
+        System.assertEquals(result, JSON.serialize(resMap));
     }
     
     @isTest
@@ -76,8 +77,9 @@ public class MemberReferralControllerTest {
         
         String url = 'language=en&spiceid='+contactsToUpdate[0].Id;          System.debug(url);
         String result = MemberReferralController.queryMember(url,'InboundLink',null);
-        String expected = member[0].Id;
-        System.assertEquals(expected, result);
+        Map<String,String> resMap = new Map<String,String>();
+        resMap.put('member', member[0].Id);
+        System.assertEquals(result, JSON.serialize(resMap));
     }
     
     @isTest
@@ -95,8 +97,9 @@ public class MemberReferralControllerTest {
         String result = MemberReferralController.queryMember(url,'InboundLink','TryMemberCreation');
         
         FieloPLT__Member__c m = [SELECT Id FROM FieloPLT__Member__c WHERE FieloPLT__Contact__r.SpiceID__c ='123abcNoMember' ]; 
-        String expected = m.Id;
-        System.assertEquals(expected, result);
+        Map<String,String> resMap = new Map<String,String>();
+        resMap.put('member', m.Id);
+        System.assertEquals(result, JSON.serialize(resMap));
     }
     
     @isTest
@@ -111,7 +114,9 @@ public class MemberReferralControllerTest {
         String url = 'language=en&member='+member;        
         String result = MemberReferralController.queryMember(url,'InboundLink2',null);        
         String expected = member;
-        System.assertEquals(expected, result);
+        Map<String,String> resMap = new Map<String,String>();
+        resMap.put('member', member);
+        System.assertEquals(result, JSON.serialize(resMap));
     }
     
     @isTest
@@ -128,10 +133,10 @@ public class MemberReferralControllerTest {
         String url = 'language=en&spiceid='+contacts[0].Id;          System.debug(url);
         String result = MemberReferralController.queryMember(url,'InboundLink',null);
         
-        /*FieloPLT__Member__c m = [SELECT Id FROM FieloPLT__Member__c WHERE FieloPLT__Contact__r.SpiceID__c ='123abcNoMember' ]; 
-        String expected = m.Id;*/
-        String expected = 'Attempt to de-reference a null object';
-        System.assertEquals(expected, result);
+        Map<String,String> resMap = new Map<String,String>();
+        resMap.put('error','Attempt to de-reference a null object');
+        System.assertEquals(result, JSON.serialize(resMap));
+        
     }
     
     @isTest
@@ -149,9 +154,10 @@ public class MemberReferralControllerTest {
         String result = MemberReferralController.queryMember(url,'InboundLink','TryMemberCreation');
         
         FieloPLT__Member__c m = [SELECT Id FROM FieloPLT__Member__c WHERE FieloPLT__Contact__r.SpiceID__c ='123abcNoMember' ];
-        String expected = m.Id;
-        //String expected = 'Attempt to de-reference a null object';
-        System.assertEquals(expected, result);
+        //String expected = m.Id;
+        Map<String,String> resMap = new Map<String,String>();
+        resMap.put('member', m.Id);
+        System.assertEquals(result, JSON.serialize(resMap));
     }
     
     @isTest
@@ -163,9 +169,9 @@ public class MemberReferralControllerTest {
         String url = 'language=en&contact='+m[0].FieloPLT__Contact__c;          System.debug(url);
         String result = MemberReferralController.queryMember(url,'InboundLink4',null);
         
-        String expected = m[0].Id;
-        //String expected = 'Attempt to de-reference a null object';
-        System.assertEquals(expected, result);
+        Map<String,String> resMap = new Map<String,String>();
+        resMap.put('member',m[0].Id);
+        System.assertEquals(result, JSON.serialize(resMap));
     }
     
     @isTest
@@ -182,10 +188,9 @@ public class MemberReferralControllerTest {
         String url = 'language=en&spiceid='+contacts[0].Id;          System.debug(url);
         String result = MemberReferralController.queryMember(url,'InboundLink','FieloELR,TryMemberCreation');
         
-        //FieloPLT__Member__c m = [SELECT Id FROM FieloPLT__Member__c WHERE FieloPLT__Contact__r.SpiceID__c ='123abcNoMember' ];
-        String expected = 'Attempt to de-reference a null object';
-        //String expected = 'Attempt to de-reference a null object';
-        System.assertEquals(expected, result);
+       Map<String,String> resMap = new Map<String,String>();
+        resMap.put('error','Attempt to de-reference a null object');
+        System.assertEquals(result, JSON.serialize(resMap));
     }
     
 }

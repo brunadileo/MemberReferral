@@ -30,7 +30,8 @@
             var action = cmp.get("c.getShortLink");
             action.setParams({
                 url: link,
-                classNameComplete:classname
+                classNameComplete:classname,
+                apiKey: LinkShortenerApiKey   
             });            
             action.setCallback(this, function(response) {
                 var state = response.getState();

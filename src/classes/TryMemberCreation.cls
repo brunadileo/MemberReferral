@@ -2,12 +2,14 @@ public class TryMemberCreation implements MemberCreation {
     
     public static Map<String, String> createMembers(Set<Id> cSet, Id programId){
         System.debug('programId:' +programId);
-        /*if(programId == null){
+        System.debug('Set<Id> cSet:' +cSet);
+        
+        if(programId == null){
             FieloPLT__Program__c p = [SELECT Id FROM FieloPLT__Program__c LIMIT 1];
             programId = p.Id;
-        }*/
+        }
         
-        Contact[] cList = [SELECT Id, FirstName, LastName, Email,Member__c FROM Contact WHERE Id IN :cSet];
+        Contact[] cList = [SELECT Id, FirstName, LastName, Email, FieloMRF__Member__c FROM Contact WHERE Id IN :cSet];
         List<FieloPLT__Member__c> members = new List<FieloPLT__Member__c>();
         
         for(Integer i=0; i< cList.size();i++){

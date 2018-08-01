@@ -1,44 +1,28 @@
 ({    
-    doInit: function(cmp, event, helper){        
-        var loggedInSetup = cmp.get("v.loggedInMember"); console.log('loggedInSetup: '+loggedInSetup);
-        
-        var member = window.localStorage.getItem('member'); console.log('member: '+member);
-        if(member == null){
-            member = event.getParam("member"); 
-        }
-        
+    getMember: function(cmp, event, helper){
+        console.log('GET MEMBER CONTROLLER');
+        var loggedInSetup = cmp.get("v.loggedInMember"); //console.log('loggedInSetup: '+loggedInSetup);
         if(loggedInSetup){
-            var member = event.getParam("member"); console.log('member: '+member);
-            if(member){
-                cmp.set("v.member",member.Id); console.log(cmp.get("v.member"));
-                $A.get('e.force:refreshView').fire();
-                var action = cmp.get("c.setMember");
-                console.log(JSON.stringify(member, null, 2));                
-                action.setParams({
-                    "memberId": member.Id
-                });
-                
-                $A.enqueueAction(action);
-            }else{
-                console.log("fez query");
-                
-                var action = cmp.get("c.setMemberbyUser"); 
-                action.setCallback(this, function(response) {
-                    var state = response.getState();           
-                    if (state === "SUCCESS") { 
-                        var res = response.getReturnValue(); console.log(res);
-                        cmp.set("v.member",res);
-                        //helper.openComponent(cmp, event, helper);
-                    }else if (state === "ERROR") {
-                        if (response.getError()) {
-                            console.log("Error message: " + response.getError()[0].message);
-                        }
-                    }                                                                
-                });
-                $A.enqueueAction(action);     
+            do{  
+                try {
+                    console.log(JSON.stringify(event.getParams()));
+                    var member = event.getParam('member'); console.log(member);
+                    cmp.set('v.member', member.Id); console.log(cmp.get("v.member"));
+                    window.localStorage.setItem('member', JSON.stringify(member));
+                } catch (e) {
+                    console.log(e);
+                    helper.doInit(cmp, event, helper);
+                }
             }
-            
-        }else{
+            while(cmp.get("v.member") == null);
+        }        
+    },
+    
+    doInit: function(cmp, event, helper){     
+        console.log('DO INIT CONTROLLER');
+        var loggedInSetup = cmp.get("v.loggedInMember"); //console.log('loggedInSetup: '+loggedInSetup);
+        
+        if(loggedInSetup == false){
             var url;
             if(url == null){
                 url = window.location.href; console.log(url);
@@ -52,11 +36,16 @@
                 memberCreationClass:cmp.get("v.MemberCreationExternalClass")
             })
             action.setCallback(this, function(response) {
-                var state = response.getState();           
+                var state = response.getState();      console.log(state);     
                 if (state === "SUCCESS") { 
-                    var res = response.getReturnValue(); console.log(res);
-                    cmp.set("v.member",res);
-                    //helper.openComponent(cmp, event, helper);
+                    var res = JSON.parse(response.getReturnValue()); console.log(res);
+                    if(res == null){
+                        cmp.set("v.member",'no member');
+                    } else if(res.member){
+                        cmp.set("v.member",res.member);
+                    }else if(res.error){
+                        helper.showMyToast(cmp, event, helper, res.error);
+                    }
                 }else if (state === "ERROR") {
                     if (response.getError()) {
                         console.log("Error message: " + response.getError()[0].message);
@@ -66,6 +55,7 @@
             $A.enqueueAction(action);
             
         }
-    }
+    },
+    
     
 })

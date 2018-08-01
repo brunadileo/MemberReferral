@@ -1,6 +1,8 @@
 public without sharing class MemberReferralController {
     @AuraEnabled
     public static String queryMember(String url, String inboundSetup, String memberCreationClass){
+        Map<String,String> resultMap = new Map<String,String>();
+        
         String[] urlParams = url.split('&');
         Map<String,String> paramsMap = new Map<String,String>();
         for(String s : urlParams){
@@ -12,27 +14,37 @@ public without sharing class MemberReferralController {
         //change it to see if its Id, if not query to find result - Id of member
         String[] inboundList = inboundSetup.split(',');
         Boolean memberProcess = false;
-        String parameter, qWhere;
+        List<String> parameters = new List<String>(); // list of parameters name
+        List<String> fields = new List<String>{'Id','FieloPLT__Status__c' };
+            Map<String,String> queryWhere = new Map<String,String>(); //{fieldApiName : field value}
         for(String i: inboundList){
             ParametersSettings__c ps = ParametersSettings__c.getInstance(i);	
             if(ps.ObjectApiName__c == 'FieloPLT__Member__c' && paramsMap.keySet().contains(ps.Parameter__c)){
                 memberProcess = true;
-                parameter = ps.Parameter__c;
-                qWhere = ps.FieldApiName__c;  
+                if(ps.FieldApiName__c != 'Id' && ps.FieldApiName__c != 'FieloPLT__Status__c' ){
+                    fields.add(ps.FieldApiName__c);
+                }
+                queryWhere.put(ps.FieldApiName__c,paramsMap.get(ps.Parameter__c));
             }
         }
         System.debug(inboundList);
         
-        String fields = 'Id';
         if(memberProcess){
-            String value = (String)paramsMap.get(parameter);
-            if(qWhere != fields){
-                fields += (', '+qWhere);
+            String fieldset = String.join(fields, ',');
+            String query = 'SELECT '+fieldset+ ' FROM FieloPLT__Member__c WHERE ';
+            List<String> qWhereList = new List<String>();
+            for(String q: queryWhere.keySet()){
+                query += (q + ' = ' +  '\''+queryWhere.get(q)+ '\'');
             }
-            String query = 'SELECT '+fields+ ' FROM FieloPLT__Member__c WHERE '+qWhere+'=: value'; System.debug(query);
-            FieloPLT__Member__c m = Database.query(query);        System.debug(m);
-            
-            return m.Id;
+            System.debug(query);
+            FieloPLT__Member__c m = Database.query(query); System.debug(m);
+            if(m.FieloPLT__Status__c == 'Active'){
+                resultMap.put('member',m.Id);            
+                return JSON.serialize(resultMap);
+            }else{
+                resultMap.put('error',Label.MemberStatus +' '+ m.FieloPLT__Status__c);            
+                return JSON.serialize(resultMap);
+            }
         }else{
             return findRelatedMember(paramsMap,inboundList, memberCreationClass);
         }
@@ -40,12 +52,13 @@ public without sharing class MemberReferralController {
     }
     
     public static String findRelatedMember(Map<String,String> paramsMap, String[] inboundList, String memberCreationClass){
-      
-        String programId, lookupRelationship;
-        Map<String,String> createMemberMap = new Map<String,String>();
+        Map<String,String> resultMap = new Map<String,String>();
         
-        //{ObjectApiName__c: {FieldApiName__c(1): fieldValue(1), FieldApiName__c(2): fieldValue(2)}}
-        Map<String,Map<String,String>> objFields = new Map<String,Map<String,String>>();
+        String programId, lookupRelationship;
+        Map<String,String> createMemberMap = new Map<String,String>{'field' => 'Id'};
+            
+            //{ObjectApiName__c: {FieldApiName__c(1): fieldValue(1), FieldApiName__c(2): fieldValue(2)}}
+            Map<String,Map<String,String>> objFields = new Map<String,Map<String,String>>();
         
         //iterate over the Inbound link Setup (list of custom settings)        
         for(String i: inboundList){
@@ -55,11 +68,10 @@ public without sharing class MemberReferralController {
                     lookupRelationship = ps.LookupRelationship__c;    System.debug(lookupRelationship);                 
                     Map<String,String> fields = new Map<String,String>();                    
                     fields.put(ps.FieldApiName__c, paramsMap.get(ps.Parameter__c)); System.debug(fields);
-                    createMemberMap.put('field','Id');
                     createMemberMap.put('object',ps.ObjectApiName__c);
                     if(objFields.keySet().contains(ps.ObjectApiName__c)){
-                        Map<String,String> temp = objFields.get(ps.ObjectApiName__c);
-                        temp.put(ps.FieldApiName__c, paramsMap.get(ps.Parameter__c)); 
+                        Map<String,String> temporaryMap = objFields.get(ps.ObjectApiName__c);
+                        temporaryMap.put(ps.FieldApiName__c, paramsMap.get(ps.Parameter__c)); 
                     }else{
                         objFields.put(ps.ObjectApiName__c,fields);
                     }
@@ -74,35 +86,31 @@ public without sharing class MemberReferralController {
         
         //checks if there is Inbound Link config has a object with Member Lookup Field
         //create the query and do the check
-        String fieldset = lookupRelationship;
-        String obj, objWhere;
-        
+        System.debug(lookupRelationship.substringBeforeLast('__c'));
+        String memberStatus = lookupRelationship.substringBeforeLast('__c')+'__r.FieloPLT__Status__c';
+        List<String> fieldList = new List<String>{lookupRelationship, memberStatus};
+            String obj;
+        //List<String> queryWhere = new List<String>();
+        Map<String,String> fieldMap= new Map<String,String>();
         if(!objFields.isEmpty()){
             for(String s: objFields.keySet()){ 
-                obj = s; System.debug(obj);
-                Map<String,String> fieldList = new Map<String,String>(objFields.get(s));
-                for(String field : fieldList.keySet()){
-                    String o = fieldList.get(field);
-                    if(fieldset == null){ 
-                        fieldset = (field + ' ,');
-                    }else{ 
-                        fieldset += (' ,'+ field); 
-                    }
-                    
-                    if(objWhere == null){
-                        objWhere = (field + ' =: o AND '); 
-                    }else{ 
-                        objWhere += (field + ' =: o AND '); 
-                    }
+                obj = s; System.debug(obj); 
+                fieldMap = objFields.get(s);
+                for(String field : fieldMap.keySet()){
+                    String o = fieldMap.get(field);
+                    fieldList.add(field);                    
                 }
             }
-            fieldset = fieldset.substringBeforeLast(' ,');
-            objWhere = objWhere.substringBeforeLast(' AND ');
             
         }else{
             return null;
         }
-        String objQuery = 'SELECT '+fieldset+' FROM '+obj + ' WHERE '+ objWhere ;
+        
+        String fieldset = String.join(fieldList,',');
+        String objQuery = 'SELECT '+ fieldset +' FROM '+ obj + ' WHERE ';
+        for(String field: fieldMap.keySet()){
+            objQuery += (field + ' = ' +  '\''+fieldMap.get(field)+ '\'');
+        }
         System.debug(objQuery);
         
         sObject sobj;
@@ -110,14 +118,25 @@ public without sharing class MemberReferralController {
         try{
             sobj = Database.query(objQuery); System.debug(sobj);
             memberId = (String)sobj.get(lookupRelationship); System.debug(memberId);
-            createMemberMap.put('value',sobj.Id);        System.debug(createMemberMap);
+			createMemberMap.put('value',sobj.Id);System.debug(createMemberMap);            
+            sObject memberInfo = sobj.getSObject(lookupRelationship.substringBeforeLast('__c')+'__r'); System.debug(memberInfo);    
+            String memberStatus2 = (String)memberInfo.get('FieloPLT__Status__c'); System.debug(memberStatus2); 
+            if(memberStatus2 == 'Active'){
+                resultMap.put('member',memberId);            
+                return JSON.serialize(resultMap);
+            }else{
+                resultMap.put('error',Label.MemberStatus +' '+ memberStatus2);            
+                return JSON.serialize(resultMap);
+            }
+            
         }catch(Exception e){
             sobj = null;
-            memberId =null;
+            memberId = null;
         }
         
         if(String.isNotBlank(memberId)){
-            return memberId;
+            resultMap.put('member',memberId);
+            return JSON.serialize(resultMap);
         }else{
             System.debug(createMemberMap);  
             try{
@@ -127,16 +146,15 @@ public without sharing class MemberReferralController {
                 errorLogToAdd.FieloPLT__Message__c = e.getMessage();
                 errorLogToAdd.FieloPLT__LineNumber__c = e.getLineNumber();  
                 insert errorLogToAdd ;
-                return e.getMessage();
+                resultMap.put('error',e.getMessage());
+                return JSON.serialize(resultMap);
             }
         }
         
     }
     
     public static String createMember(String classNameComplete, Map<String,String> createMemberMap, Id programId){
-        System.debug(classNameComplete);
-        System.debug(createMemberMap);
-        System.debug(programId);
+        Map<String,String> resultMap = new Map<String,String>();
         String[] classNameList;
         String namespace, className;
         
@@ -153,16 +171,24 @@ public without sharing class MemberReferralController {
             Type t = Type.forName(namespace,className);
             MemberCreation msInstance = (MemberCreation)t.newInstance();
             Map<String, String> createdMembers = msInstance.createMembers(new Set<Id>{createMemberMap.get('value')},programId);
-            String createdMember = createdMembers.values()[0];
-            return createdMember;
+            if(createdMembers.keySet().contains('error')){
+                FieloPLT__ErrorLog__c errorLogToAdd = new FieloPLT__ErrorLog__c();
+                errorLogToAdd.FieloPLT__Message__c = createdMembers.values()[0];
+                insert errorLogToAdd ;
+                resultMap.put('error',createdMembers.values()[0]);
+                return JSON.serialize(resultMap);
+            }else{
+                resultMap.put('member',createdMembers.values()[0]);
+                return JSON.serialize(resultMap);
+            }
         }catch(Exception e){
             FieloPLT__ErrorLog__c errorLogToAdd = new FieloPLT__ErrorLog__c();
             errorLogToAdd.FieloPLT__Message__c = e.getMessage();
             errorLogToAdd.FieloPLT__LineNumber__c = e.getLineNumber();
             insert errorLogToAdd ;
-            return e.getMessage();
-        }
-        
+            resultMap.put('error',e.getMessage());
+            return JSON.serialize(resultMap);
+        }        
     }
     
     @auraEnabled    

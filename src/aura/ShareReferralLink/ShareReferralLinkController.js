@@ -1,6 +1,6 @@
 ({
-  
-    doInit: function(cmp, event, helper){        
+    
+    doInit: function(cmp, event, helper){      
         
         var action = cmp.get("c.getParams");
         action.setParams({
@@ -38,7 +38,7 @@
         });
         
         if(cmp.get("v.shortURL")){
-        	helper.showMyToast(cmp, event, helper, 'success');
+            helper.showMyToast(cmp, event, helper, 'success');
         }else{
             helper.showMyToast(cmp, event, helper, 'error');
         }
@@ -136,6 +136,13 @@
         cmp.set("v.viberurl",url);
     },
     
-    
+    clickSMSButton: function(cmp, event, helper){
+        
+        var message = cmp.get("v.socialmedia");
+        var init =  encodeURIComponent(cmp.get("v.shortURL"));
+        var url = 'sms:?&body='+init;
+        cmp.set("v.smsLink", url);
+    },
+   
     
 })

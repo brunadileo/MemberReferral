@@ -11,7 +11,8 @@
     <aura:attribute name="customSettingOut" type="String" access="global"/>
     
     <aura:attribute name="MemberCreationExternalClass" type="String" access="global"/>
-    <aura:attribute name="LinkShortenerClass" type="String" access="global"/>    
+    <aura:attribute name="LinkShortenerClass" type="String" access="global"/>   
+    <aura:attribute name="LinkShortenerApiKey" type="String" access="global"/>   
     
     <aura:attribute name="pageName" type="String" access="global"/>    
     <aura:attribute name="communityURL" type="String" access="global"/> 
@@ -30,16 +31,13 @@
     <aura:attribute name="member" type="String" access="global"/>
     <aura:attribute name="mailto" type="String" access="global"/>
     
-    
     <!--EVENTS-->
+        
+    <aura:handler event="FieloPLT:UpdateMemberEvent" action="{!c.getMember}" />
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
-    <aura:handler event="FieloPLT:UpdateMemberEvent" action="{!c.doInit}" />    
     
     <!--BODY-->  
-    
-    <!-- <a href="sms:">Send a SMS message</a>-->
-    <!-- <div aura:id="container"> </div>-->
-    
+        
     <aura:if isTrue="{! !empty(v.member)}">
         
         <c:ShareReferralLink url="{!v.url}"
@@ -57,7 +55,8 @@
                              customSettingIn="{!v.customSettingIn}"
                              customSettingOut="{!v.customSettingOut}"
                              pageName="{!v.pageName}"
-                             LinkShortenerClass="{!v.LinkShortenerClass}"/>
+                             LinkShortenerClass="{!v.LinkShortenerClass}"
+                             LinkShortenerApiKey="{!v.LinkShortenerApiKey}" />
         
-    </aura:if> 
+    </aura:if>
 </aura:component>

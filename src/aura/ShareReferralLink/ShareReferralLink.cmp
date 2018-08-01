@@ -15,6 +15,7 @@
     
     <aura:attribute name="LinkShortenerClass" type="String" />    
     <aura:attribute name="MemberCreationExternalClass" type="String" default=""/>
+    <aura:attribute name="LinkShortenerApiKey" type="String" access="global"/>   
     
     <aura:attribute name="showFB" type="Boolean" />
     <aura:attribute name="showTW" type="Boolean" />
@@ -32,6 +33,7 @@
     <aura:attribute name="clickedCopy" type="Boolean" default="false" />
     <aura:attribute name="completeURL" type="String"/>
     <aura:attribute name="shortURL" type="String"/>
+    <aura:attribute name="smsLink" type="String"/>
     <aura:attribute name="mailto" type="String"/>
     <aura:attribute name="socialmedia" type="String" default="{!$Label.c.SocialMediaMessage}"/>
     <aura:attribute name="emailsubject" type="String" default="{!$Label.c.EmailSubject}"/>
@@ -90,6 +92,7 @@
                                 onclick="{!c.clickLKButton}"/></a>            
             </lightning:layoutItem> 
         </aura:if>
+        
         <aura:if isTrue="{!v.showWP}">
             <lightning:layoutItem padding="around-small">
                 <a href="">
@@ -97,12 +100,21 @@
                          onclick="{!c.clickWPButton}"/></a>
             </lightning:layoutItem> 
         </aura:if>
-        <aura:if isTrue="{!and(equals(v.device,'PHONE'),v.showVI)}">
+        <aura:if isTrue="{!equals(v.device,'PHONE')}">
+        <aura:if isTrue="{!v.showSMS}">
+            <lightning:layoutItem padding="around-small">
+                <a href="{!v.smsLink}">
+                    <img aura:id="sms" src="{!$Resource.SmsIcon}" class="imgicon sms"
+                         onclick="{!c.clickSMSButton}"/></a>
+            </lightning:layoutItem> 
+        </aura:if>
+        <aura:if isTrue="{!v.showVI}">
             <lightning:layoutItem padding="around-small">
                 <a href="{!v.viberurl}"><img aura:id="viber" src="{!$Resource.ViberIcon}" class="imgicon viber"
                                              onclick="{!c.clickVIButton}"/></a>            
             </lightning:layoutItem> 
         </aura:if>
+            </aura:if>
     </lightning:layout>
     
     
