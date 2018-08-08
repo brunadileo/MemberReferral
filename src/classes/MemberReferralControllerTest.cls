@@ -19,7 +19,7 @@ public class MemberReferralControllerTest {
         List<ParametersSettings__c> psList = new  List<ParametersSettings__c>();
         ParametersSettings__c psOut = new ParametersSettings__c();
         psOut.Name = 'InboundLink';
-        psOut.Parameter__c = 'spiceid';
+        psOut.Parameter__c = 'contact';
         psOut.ObjectApiName__c = 'Contact';
         psOut.FieldApiName__c = 'Id';
         psOut.LookupRelationship__c = 'Member__c';
@@ -70,38 +70,17 @@ public class MemberReferralControllerTest {
         Contact[] contactsToUpdate = new Contact[]{};
             for(Contact c: contacts){
                 c.Member__c = member[0].Id;
-                c.SpiceID__c = '123abc'+c.LastName;
                 contactsToUpdate.add(c);
             }
         update contactsToUpdate;
         
-        String url = 'language=en&spiceid='+contactsToUpdate[0].Id;          System.debug(url);
+        String url = 'language=en&contact='+contactsToUpdate[0].Id;          System.debug(url);
         String result = MemberReferralController.queryMember(url,'InboundLink',null);
         Map<String,String> resMap = new Map<String,String>();
         resMap.put('member', member[0].Id);
         System.assertEquals(result, JSON.serialize(resMap));
     }
-    
-    @isTest
-    static void queryMemberTest3(){        
-        List<Contact> contacts = MockUpFactory.createContacts(1);
-        for(Contact c: contacts){
-            c.SpiceID__c = '123abc'+c.FirstName;
-        }
-        insert contacts;
-        System.debug(contacts);
-        
-        FieloPLT__Program__c p = [SELECT Id FROM FieloPLT__Program__c LIMIT 1];
-        
-        String url = 'language=en&spiceid='+contacts[0].Id;          System.debug(url);
-        String result = MemberReferralController.queryMember(url,'InboundLink','TryMemberCreation');
-        
-        FieloPLT__Member__c m = [SELECT Id FROM FieloPLT__Member__c WHERE FieloPLT__Contact__r.SpiceID__c ='123abcNoMember' ]; 
-        Map<String,String> resMap = new Map<String,String>();
-        resMap.put('member', m.Id);
-        System.assertEquals(result, JSON.serialize(resMap));
-    }
-    
+
     @isTest
     static void queryMemberTest4(){
         User[] u = [SELECT Id FROM User WHERE Alias = 'alias'];
@@ -122,15 +101,10 @@ public class MemberReferralControllerTest {
     @isTest
     static void queryMemberTest5(){        
         List<Contact> contacts = MockUpFactory.createContacts(1);
-        for(Contact c: contacts){
-            c.SpiceID__c = '123abc'+c.FirstName;
-        }
-        insert contacts;
-        System.debug(contacts);
-        
+      
         FieloPLT__Program__c p = [SELECT Id FROM FieloPLT__Program__c LIMIT 1];
         
-        String url = 'language=en&spiceid='+contacts[0].Id;          System.debug(url);
+        String url = 'language=en&contact='+contacts[0].Id;          System.debug(url);
         String result = MemberReferralController.queryMember(url,'InboundLink',null);
         
         Map<String,String> resMap = new Map<String,String>();
@@ -141,22 +115,16 @@ public class MemberReferralControllerTest {
     
     @isTest
     static void queryMemberTest6(){        
-        List<Contact> contacts = MockUpFactory.createContacts(1);
-        for(Contact c: contacts){
-            c.SpiceID__c = '123abc'+c.FirstName;
-        }
+        List<Contact> contacts = MockUpFactory.createContacts(1); System.debug(contacts);
         insert contacts;
-        System.debug(contacts);
         
         FieloPLT__Program__c p = [SELECT Id FROM FieloPLT__Program__c LIMIT 1];
-        
-        String url = 'language=en&spiceid='+contacts[0].Id;          System.debug(url);
+                
+        String url = 'language=en&contact='+contacts[0].Id;          System.debug(url);
         String result = MemberReferralController.queryMember(url,'InboundLink','TryMemberCreation');
-        
-        FieloPLT__Member__c m = [SELECT Id FROM FieloPLT__Member__c WHERE FieloPLT__Contact__r.SpiceID__c ='123abcNoMember' ];
-        //String expected = m.Id;
+        FieloPLT__Member__c member = [SELECT Id FROM FieloPLT__Member__c WHERE FieloPLT__Contact__c =: contacts[0].Id];
         Map<String,String> resMap = new Map<String,String>();
-        resMap.put('member', m.Id);
+        resMap.put('member', member.Id);
         System.assertEquals(result, JSON.serialize(resMap));
     }
     
@@ -176,16 +144,11 @@ public class MemberReferralControllerTest {
     
     @isTest
     static void queryMemberTest8(){        
-        List<Contact> contacts = MockUpFactory.createContacts(1);
-        for(Contact c: contacts){
-            c.SpiceID__c = '123abc'+c.FirstName;
-        }
-        insert contacts;
-        System.debug(contacts);
+        List<Contact> contacts = MockUpFactory.createContacts(1); 
         
         FieloPLT__Program__c p = [SELECT Id FROM FieloPLT__Program__c LIMIT 1];
         
-        String url = 'language=en&spiceid='+contacts[0].Id;          System.debug(url);
+        String url = 'language=en&contact='+contacts[0].Id;          System.debug(url);
         String result = MemberReferralController.queryMember(url,'InboundLink','FieloELR,TryMemberCreation');
         
        Map<String,String> resMap = new Map<String,String>();

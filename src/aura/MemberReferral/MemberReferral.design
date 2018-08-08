@@ -4,7 +4,7 @@
     <design:attribute label="Email tool" name="emailTool" 
                       description="Choose the preferred e-mail tool" datasource="SendGrid,Salesforce,Open email app"/>
     
-    <design:attribute label="Custom Setting - Inbound Link" name="customSettingIn" required="true"/>
+    <design:attribute label="Custom Setting - Inbound Link" name="customSettingIn" required="false"/>
     <design:attribute label="Custom Setting - Outbound Link" name="customSettingOut" required="true"/>
 
     <design:attribute label="Community url" name="communityURL" 
@@ -14,6 +14,7 @@
     
     <design:attribute label="Member Creation - External Class" name="MemberCreationExternalClass" />
     <design:attribute label="Link Shortener - External Class" name="LinkShortenerClass" />
+    <design:attribute label="Link Shortener - ApiKey" name="LinkShortenerApiKey" />
     
     <design:attribute name="showFB" label="Facebook" />
     <design:attribute name="showEmail" label="Email" />
@@ -22,5 +23,6 @@
     <design:attribute name="showLK" label="Linkedin" />
     <design:attribute name="showGO" label="Google+" />
     <design:attribute name="showVI" label="Viber" />
+    <design:attribute name="showSMS" label="SMS" />
     
 </design:component>

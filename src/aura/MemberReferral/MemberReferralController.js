@@ -1,6 +1,7 @@
 ({    
     getMember: function(cmp, event, helper){
         console.log('GET MEMBER CONTROLLER');
+        cmp.set("v.callGetMember", true);
         var loggedInSetup = cmp.get("v.loggedInMember"); //console.log('loggedInSetup: '+loggedInSetup);
         if(loggedInSetup){
             do{  
@@ -9,9 +10,22 @@
                     var member = event.getParam('member'); console.log(member);
                     cmp.set('v.member', member.Id); console.log(cmp.get("v.member"));
                     window.localStorage.setItem('member', JSON.stringify(member));
+                    
                 } catch (e) {
                     console.log(e);
-                    helper.doInit(cmp, event, helper);
+                    var action = cmp.get("c.setMemberbyUser"); 
+                    action.setCallback(this, function(response) {
+                        var state = response.getState();           
+                        if (state === "SUCCESS") { 
+                            var res = response.getReturnValue(); console.log(res);
+                            cmp.set("v.member",res);
+                        }else if (state === "ERROR") {
+                            if (response.getError()) {
+                                console.log("Error message: " + response.getError()[0].message);
+                            }
+                        }                                                                
+                    });
+                    $A.enqueueAction(action);     
                 }
             }
             while(cmp.get("v.member") == null);
@@ -21,8 +35,18 @@
     doInit: function(cmp, event, helper){     
         console.log('DO INIT CONTROLLER');
         var loggedInSetup = cmp.get("v.loggedInMember"); //console.log('loggedInSetup: '+loggedInSetup);
-        
-        if(loggedInSetup == false){
+        if(loggedInSetup){
+            console.log('entra aqui 1');
+            if(localStorage.getItem('member') == null){
+                console.log('entra aqui 2');
+				helper.getMember(cmp, event, helper);                
+            }else{
+                console.log('entra aqui 3');
+                console.log(localStorage.getItem('member'));
+                var member = JSON.parse(localStorage.getItem('member'));
+                cmp.set('v.member', member.Id);
+            }
+        }else{
             var url;
             if(url == null){
                 url = window.location.href; console.log(url);

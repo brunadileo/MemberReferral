@@ -5,6 +5,8 @@
     
     <!--DESIGN RESOURCES-->
     <aura:attribute name="loggedInMember" type="Boolean" default="false" access="global"/>
+    <aura:attribute name="callGetMember" type="Boolean" default="false" access="global"/>
+
     <aura:attribute name="url" type="String" access="global"/>
     
     <aura:attribute name="customSettingIn" type="String" access="global"/>
@@ -26,6 +28,7 @@
     <aura:attribute name="showLK" type="Boolean" access="global"/>
     <aura:attribute name="showGO" type="Boolean" access="global"/>
     <aura:attribute name="showVI" type="Boolean" access="global"/>
+    <aura:attribute name="showSMS" type="Boolean" access="global"/>
     
     <!--OTHER VARIABLES-->    
     <aura:attribute name="member" type="String" access="global"/>
@@ -49,6 +52,7 @@
                              showLK="{!v.showLK}"
                              showGO="{!v.showGO}"
                              showVI="{!v.showVI}"
+                             showSMS="{!v.showSMS}"
                              communityURL="{!v.communityURL}"
                              emailTool="{!v.emailTool}"
                              member="{!v.member}"

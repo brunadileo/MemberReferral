@@ -119,7 +119,7 @@ public without sharing class ShareReferralLinkController {
     }
     
     @AuraEnabled
-    public static String getShortLink(String url,String classNameComplete){ 
+    public static String getShortLink(String url,String classNameComplete, String apiKey){ 
         List<String> classNameList = new List<String>();
         String namespace, className;
         
@@ -134,8 +134,8 @@ public without sharing class ShareReferralLinkController {
         
         try{
             Type t = Type.forName(namespace,classname);
-            LinkShortener link = (LinkShortener)t.newInstance();                
-            return link.shortenLink(url);
+            LinkShortener2 link = (LinkShortener2)t.newInstance();                
+            return link.shortenLink(url,apiKey);
         }catch(Exception e){
             FieloPLT__ErrorLog__c errorLogToAdd = new FieloPLT__ErrorLog__c();
             errorLogToAdd.FieloPLT__Message__c = e.getMessage();

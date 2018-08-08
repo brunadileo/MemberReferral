@@ -130,8 +130,9 @@ public class ShareReferralLinkControllerTest {
     static void getShortLinkTest1(){
         String url = 'www.uol.com.br';
         String classNameComplete = 'TryMember';
+        String apiKey = 'abcd123456';
         
-        String  result = ShareReferralLinkController.getShortLink(url, classNameComplete);
+        String  result = ShareReferralLinkController.getShortLink(url, classNameComplete,apiKey);
         
         System.assertEquals('Attempt to de-reference a null object', result);
         

@@ -31,7 +31,7 @@
             action.setParams({
                 url: link,
                 classNameComplete:classname,
-                apiKey: LinkShortenerApiKey   
+                apiKey: cmp.get("v.LinkShortenerApiKey")  
             });            
             action.setCallback(this, function(response) {
                 var state = response.getState();

@@ -4,10 +4,10 @@ public class TryMemberCreation implements MemberCreation {
         System.debug('programId:' +programId);
         System.debug('Set<Id> cSet:' +cSet);
         
-        if(programId == null){
+        /*if(programId == null){
             FieloPLT__Program__c p = [SELECT Id FROM FieloPLT__Program__c LIMIT 1];
             programId = p.Id;
-        }
+        }*/
         
         Contact[] cList = [SELECT Id, FirstName, LastName, Email, FieloMRF__Member__c FROM Contact WHERE Id IN :cSet];
         List<FieloPLT__Member__c> members = new List<FieloPLT__Member__c>();
@@ -38,4 +38,5 @@ public class TryMemberCreation implements MemberCreation {
         return resMap;
     }
     
+   
 }
