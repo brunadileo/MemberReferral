@@ -1,0 +1,129 @@
+<aura:component controller="InitialMemberRegistrationController">
+    
+    <!-- DESIGN RESOURCES -->
+    <aura:attribute name="createContact" type="Boolean" default="false"/>
+    <aura:attribute name="createLead" type="Boolean" default="false"/>
+    <aura:attribute name="createAccount" type="Boolean" default="false"/>
+    <aura:attribute name="defaultProgram" type="String" access="global" default=""/> 
+    
+    <!--OTHER VARIABLES -->
+    <aura:attribute name="member" type="String" />
+    <aura:attribute name="memberList" type="List" />
+    
+    <!-- visualization -->
+    <aura:attribute name="showRegistration" type="Boolean" default="false"/>
+    <aura:attribute name="showSearch" type="Boolean" default="true"/>
+    <aura:attribute name="showMemberList" type="Boolean" default="false"/>
+    <aura:attribute name="showProgramList" type="Boolean" default="false"/>
+    <aura:attribute name="resetDefaultProgram" type="Boolean" default="true"/>
+    <aura:attribute name="isLoading" type="Boolean" default="false"/>
+    
+    <!-- registration form -->
+    <aura:attribute name="firstName" type="String" />
+    <aura:attribute name="lastName" type="String" />
+    <aura:attribute name="email" type="String" />
+    
+    <aura:attribute name="input1" type="Boolean" default="false"/>
+    <aura:attribute name="input2" type="Boolean" default="false"/>
+    <aura:attribute name="input3" type="Boolean" default="false"/>
+    
+    <!-- Member data table -->
+    <aura:attribute name="columns" type="List" default="[
+                                                        {label: 'Name', fieldName: 'Name', type: 'text'},
+                                                        {label: 'Program name', fieldName: 'programName', type: 'text'}
+                                                        ]"/>
+    <aura:attribute name="data" type="List" default=""/>
+    <aura:attribute name="selectedData" type="List" default=""/>
+    
+    <!-- Program data table -->
+    <aura:attribute name="columnsProgram" type="List" default="[
+                                                               {label: 'Program name', fieldName: 'Name', type: 'text'}
+                                                               ]"/>
+    <aura:attribute name="dataProgram" type="List" default=""/>
+    
+    <!-- EVENTS -->
+    <aura:registerEvent name="searchMemberEvent" type="c:SearchMember"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <!-- BODY -->
+    <div class="slds-is-relative">
+        <aura:if isTrue="{!v.showSearch}">
+            <lightning:input aura:id="enter-search"
+                             name="enter-search"
+                             placeholder="Enter your email"
+                             value="{!v.email}"
+                             class="fielomrf-EnterSearch" />
+            <br />
+            <lightning:button class="slds-align_absolute-center" variant="brand" label="Find member" onclick="{!c.searchMember}" />
+            
+        </aura:if>
+        
+        <aura:if isTrue="{!v.showMemberList}">
+            <lightning:datatable columns="{!v.columns}"
+                                 data="{!v.data}"
+                                 keyField="Id"
+                                 maxRowSelection="1"
+                                 onrowselection="{!c.updateSelectedMember}"
+                                 class="fielomrf-MemberList"/>
+            <br />
+            <lightning:buttonGroup class="slds-align_absolute-center">
+                <lightning:button label="Back" onclick="{!c.backMemberList}"/>
+                <lightning:button label="Next" onclick="{!c.nextMemberList}"/>
+            </lightning:buttonGroup>
+            
+        </aura:if>
+        
+        <aura:if isTrue="{!v.showProgramList}">
+            <lightning:datatable columns="{!v.columnsProgram}"
+                                 data="{!v.dataProgram}"
+                                 keyField="Id"
+                                 maxRowSelection="1"
+                                 onrowselection="{!c.updateSelectedProgram}"
+                                 class="fielomrf-ProgramList"/>
+            <br />
+            <lightning:buttonGroup class="slds-align_absolute-center">
+                <lightning:button label="Back" onclick="{!c.backProgramList}"/>
+                <lightning:button label="Next" onclick="{!c.nextProgramList}"/>
+            </lightning:buttonGroup>
+            
+        </aura:if>
+        <aura:if isTrue="{!and(v.showRegistration,equals(v.showProgramList,false))}">
+            <lightning:layout multipleRows="true" class="fielomrf-name-container">
+                <lightning:layoutItem size="5" class="fielomrf-firstname">
+                    <lightning:input name="firstname" label="{!$Label.c.FirstName}" placeholder="{!$Label.c.FirstName}" variant="label-hidden"
+                                     value="{!v.firstName}" />
+                </lightning:layoutItem>
+                <lightning:layoutItem size="1"></lightning:layoutItem>  
+                <lightning:layoutItem size="6" class="fielomrf-lastname">  
+                    <lightning:input name="lastName" label="{!$Label.c.LastName}" placeholder="{!$Label.c.LastName}" variant="label-hidden"
+                                     value="{!v.lastName}"/>
+                </lightning:layoutItem>
+                
+            </lightning:layout>
+            <br />
+            <lightning:input name="email" label="{!$Label.c.Email}" placeholder="{!$Label.c.Email}" variant="label-hidden"
+                             value="{!v.email}" class="fielomrf-email"/>
+            <br/>
+            
+            <lightning:input class="fielomrf-agreement1" type="checkbox" label="{!$Label.c.Agreement1}" name="input1" checked="{!v.input1}" required="true"/>
+            
+            <lightning:input class="fielomrf-agreement2" type="checkbox" label="{!$Label.c.Agreement2}" name="input2" checked="{!v.input2}" required="true"/>
+            
+            <lightning:input class="fielomrf-agreement3" type="checkbox" label="{!$Label.c.Agreement3}" name="input3" checked="{!v.input3}" required="true"/>
+            <br/>        
+            <lightning:buttonGroup class="slds-align_absolute-center">
+                <lightning:button label="Back" onclick="{!c.backRegistration}"/>
+                <lightning:button label="Save" onclick="{!c.clickSave}"/>
+            </lightning:buttonGroup>
+        </aura:if>
+        
+        
+        <aura:if isTrue="{!v.isLoading}">
+            <div class="slds-is-relative" style="height: 6rem;">
+                <lightning:spinner alternativeText="Loading" size="small"/>
+            </div>
+            
+            
+        </aura:if>
+    </div>
+</aura:component>

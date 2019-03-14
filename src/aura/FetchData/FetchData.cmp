@@ -1,0 +1,38 @@
+<aura:component controller="MemberRegistrationController" access="global">
+    
+    <aura:attribute name="firstname" type="String" />
+    <aura:attribute name="lastname" type="String" />
+    <aura:attribute name="email" type="String" />
+    
+    <aura:attribute name="fbAppId" type="String" />
+    <aura:attribute name="FbRedirectURL" type="String" />
+    
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+    
+    <aura:attribute name="googleUrl" type="String" />
+    <aura:attribute name="accessToken" type="String" />
+    <aura:attribute name="encodedUrl" type="String" />
+    <aura:attribute name="customSettingSocialMedia" type="String" access="global" default=""/> 
+    <!-- EVENTS -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:if isTrue="{!v.showSpinner}">
+        
+        <lightning:spinner variant="brand"  size="large"  />
+        
+    </aura:if>
+    
+    <lightning:layout>
+        <lightning:layoutItem size="2">
+            <a href="javascript:void(0)"> <img width="30" height="30" src="{!$Resource.Facebook}" onclick="{!c.facebookApi}" /></a>
+        </lightning:layoutItem>
+        <!--<lightning:layoutItem size="1"></lightning:layoutItem>  -->
+        
+        <lightning:layoutItem size="2">  
+            <a href="javascript:void(0)"> <img width="30" height="30" src="{!$Resource.GooglePlus}" onclick="{!c.googleApi}"/></a>
+        </lightning:layoutItem>
+        
+    </lightning:layout>
+    
+    
+</aura:component>

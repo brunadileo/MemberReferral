@@ -1,0 +1,117 @@
+<aura:component controller="ShareReferralLinkController" access="global">
+    
+    <ltng:require scripts="{!$Resource.Clipboard}" />
+    
+    <!-- DESIGN RESOURCES -->
+    <aura:attribute name="url" type="String"/> 
+    <aura:attribute name="communityURL" type="String"/> 
+    <aura:attribute name="pageName" type="String"/> 
+    <aura:attribute name="member" type="Id" />
+    
+    <aura:attribute name="emailTool" type="String"/>
+    <aura:attribute name="customSettingIn" type="String" />
+    <aura:attribute name="customSettingOut" type="String" />
+    
+    <aura:attribute name="LinkShortenerClass" type="String" />    
+    <aura:attribute name="MemberCreationExternalClass" type="String" default=""/>
+    <aura:attribute name="LinkShortenerApiKey" type="String" access="global"/>   
+    
+    <aura:attribute name="showFB" type="Boolean" />
+    <aura:attribute name="showTW" type="Boolean" />
+    <aura:attribute name="showEmail" type="Boolean" />
+    <aura:attribute name="showCopy" type="Boolean" default="true"/>
+    <aura:attribute name="showWP" type="Boolean" />
+    <aura:attribute name="showLK" type="Boolean" default="true"/>
+    <aura:attribute name="showGO" type="Boolean" default="true"/>
+    <aura:attribute name="showSMS" type="Boolean" default="true"/>
+    <aura:attribute name="showVI" type="Boolean" default="true"/>
+    <aura:attribute name="viberurl" type="String"/>
+    
+    <!-- ATTRIBUTES -->
+    <aura:attribute name="device" type="String" default="{!$Browser.formFactor}"/>
+    <aura:attribute name="clickedCopy" type="Boolean" default="false" />
+    <aura:attribute name="completeURL" type="String"/>
+    <aura:attribute name="shortURL" type="String"/>
+    <aura:attribute name="smsLink" type="String"/>
+    <aura:attribute name="mailto" type="String"/>
+    <aura:attribute name="socialmedia" type="String" default="{!$Label.c.SocialMediaMessage}"/>
+    <aura:attribute name="emailsubject" type="String" default="{!$Label.c.EmailSubject}"/>
+    <aura:attribute name="emailbody" type="String" default="{!$Label.c.EmailBody}"/>
+    
+    <!-- INITIALIZATION EVENTS-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <!-- BODY-->
+    <lightning:layout horizontalAlign="center" verticalAlign="stretch">
+        <aura:if isTrue="{!v.showCopy}">
+            <lightning:layoutItem flexibility="grow">
+                <input aura:id="shortlink" id="shortlink" name="shortlink" class="slds-input" value="{!v.shortURL}" data-clipboard-text="{!v.shortURL}"/>   
+            </lightning:layoutItem>
+            <lightning:layoutItem >
+                <button onclick="{!c.clickCopyButton}" class="slds-button slds-button_icon btn" data-clipboard-target="#shortlink" >
+                    <lightning:icon iconName="utility:copy" src="" size="small" />
+                </button>
+            </lightning:layoutItem>
+        </aura:if>    
+    </lightning:layout>
+    <lightning:layout horizontalAlign="center" verticalAlign="stretch" multipleRows="true">
+        <aura:if isTrue="{!v.showEmail}">
+            <lightning:layoutItem class="fielomrf-icon-div fielomrf-email-div" padding="around-small">
+                <a href="{!v.mailto}">
+                    <img aura:id="email" src="{!$Resource.EmailIcon}" class="fielomrf-icon-img fielomrf-icon-email" 
+                         onclick="{!c.clickEmailButton}"/></a>
+                <lightning:overlayLibrary aura:id="modal"/> 
+            </lightning:layoutItem> 
+        </aura:if>
+        <aura:if isTrue="{!v.showFB}">
+            <lightning:layoutItem class="fielomrf-icon-div fielomrf-facebook-div" padding="around-small">
+                <a href=""><img aura:id="facebook" src="{!$Resource.Facebook}" class="fielomrf-icon-img fielomrf-icon-facebook"
+                                onclick="{!c.clickFBButton}"/></a>            
+            </lightning:layoutItem> 
+        </aura:if>
+        <aura:if isTrue="{!v.showTW}">
+            <lightning:layoutItem class="fielomrf-icon-div fielomrf-twitter-div" padding="around-small">
+                <a href=""><img aura:id="twitter" src="{!$Resource.TwitterIcon}" class="fielomrf-icon-img fielomrf-icon-twitter" 
+                                onclick="{!c.clickTwButton}"/></a>            
+            </lightning:layoutItem> 
+        </aura:if>
+        <aura:if isTrue="{!v.showGO}">
+            <lightning:layoutItem class="fielomrf-icon-div fielomrf-googleplus-div" padding="around-small">
+                <a href=""><img aura:id="googleplus" src="{!$Resource.GooglePlus}" class="fielomrf-icon-img fielomrf-icon-googleplus"
+                                onclick="{!c.clickGOButton}"/></a>            
+            </lightning:layoutItem> 
+        </aura:if>
+        <aura:if isTrue="{!v.showLK}">
+            <lightning:layoutItem class="fielomrf-icon-div fielomrf-linkedin-div" padding="around-small">
+                <a href=""><img aura:id="linkedin" src="{!$Resource.Linkedin}" class="fielomrf-icon-img fielomrf-icon-linkedin"
+                                onclick="{!c.clickLKButton}"/></a>            
+            </lightning:layoutItem> 
+        </aura:if>
+        
+        <aura:if isTrue="{!v.showWP}">
+            <lightning:layoutItem class="fielomrf-icon-div fielomrf-whatsapp-div" padding="around-small">
+                <a href="">
+                    <img aura:id="whatsapp" src="{!$Resource.Whatsapp}" class="fielomrf-icon-img fielomrf-icon-whatsapp"
+                         onclick="{!c.clickWPButton}"/></a>
+            </lightning:layoutItem> 
+        </aura:if>
+        <aura:if isTrue="{!equals(v.device,'PHONE')}">
+            <aura:if isTrue="{!v.showSMS}">
+                <lightning:layoutItem class="fielomrf-icon-div fielomrf-sms-div" padding="around-small">
+                    <a href="{!v.smsLink}">
+                        <img aura:id="sms" src="{!$Resource.SmsIcon}" class="fielomrf-icon-img fielomrf-icon-sms"
+                             onclick="{!c.clickSMSButton}"/></a>
+                </lightning:layoutItem> 
+            </aura:if>
+            <aura:if isTrue="{!v.showVI}">
+                <lightning:layoutItem class="fielomrf-icon-div fielomrf-viber-div" padding="around-small">
+                    <a href="{!v.viberurl}"><img aura:id="viber" src="{!$Resource.ViberIcon}" class="fielomrf-icon-img fielomrf-icon-viber"
+                                                 onclick="{!c.clickVIButton}"/></a>            
+                </lightning:layoutItem> 
+            </aura:if>
+        </aura:if>
+    </lightning:layout>
+    
+    
+    <br /><br />
+</aura:component>

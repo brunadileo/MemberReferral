@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Agreement1</fullName>
+        <categories>MemberReferral</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Agreement1</shortDescription>
+        <value>Accept Terms and Conditions</value>
+    </labels>
+    <labels>
+        <fullName>Agreement2</fullName>
+        <categories>MemberReferral</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Agreement2</shortDescription>
+        <value>18+</value>
+    </labels>
+    <labels>
+        <fullName>Agreement3</fullName>
+        <categories>MemberReferral</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Agreement3</shortDescription>
+        <value>Accept receive Marketing communications</value>
+    </labels>
+    <labels>
+        <fullName>CopytoClipboardSuccess</fullName>
+        <categories>MemberReferral</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CopytoClipboardSuccess</shortDescription>
+        <value>Link copied to the clipboard!</value>
+    </labels>
+    <labels>
+        <fullName>Email</fullName>
+        <categories>MemberReferral</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Email</shortDescription>
+        <value>Email</value>
+    </labels>
+    <labels>
+        <fullName>EmailBody</fullName>
+        <categories>MemberReferral</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>EmailBody</shortDescription>
+        <value>Hello! 
+
+I think it&apos;s an awesome opportunity for you to be in touch with nice promotions. Click on the link bellow:</value>
+    </labels>
+    <labels>
+        <fullName>EmailSubject</fullName>
+        <categories>MemberReferral</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>EmailSubject</shortDescription>
+        <value>Join Fielo&apos;s Program!</value>
+    </labels>
+    <labels>
+        <fullName>FirstName</fullName>
+        <categories>MemberReferral</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>FirstName</shortDescription>
+        <value>First Name</value>
+    </labels>
+    <labels>
+        <fullName>LastName</fullName>
+        <categories>MemberReferral</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>LastName</shortDescription>
+        <value>Last Name</value>
+    </labels>
+    <labels>
+        <fullName>MemberStatus</fullName>
+        <categories>MemberReferral</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>MemberStatus</shortDescription>
+        <value>Please contact your Program administrator. This member can&apos;t participate in this promotion because your status is:</value>
+    </labels>
+    <labels>
+        <fullName>SocialMediaMessage</fullName>
+        <categories>MemberReferral</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SocialMediaMessage</shortDescription>
+        <value>Join Fielo&apos;s Program!</value>
+    </labels>
+</CustomLabels>

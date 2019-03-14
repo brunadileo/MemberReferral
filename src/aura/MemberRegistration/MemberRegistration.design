@@ -1,0 +1,14 @@
+<design:component label="Fielo - Member Registration">
+    <design:attribute name="showFetchData" label="Show 'Autofill with Social Media data' options" />
+    <design:attribute name="customSettingIn" label="Custom Setting - Inbound" description="The information here is the same as 'Custom Setting - Outbound Link' from the Member Referral component."/>
+    
+    <design:attribute name="createContact" label="Create Contact" />
+    <design:attribute name="createLead" label="Create Lead" />
+    <design:attribute name="createAccount" label="Create Account" />
+    <design:attribute name="createMember" label="Create Member" />
+    
+    <design:attribute name="otherObjects" label="Create other objects" description="Separate the object names by comma and put the names without namespace or '__c'. 
+                                                                                    Example: If you want to create FieloPLT__Member__c, you write Member in this box.
+                                                                                    It is important that this name is the same from the RecordCreation class name (after 'create' in createXXXX)."/>
+
+</design:component>

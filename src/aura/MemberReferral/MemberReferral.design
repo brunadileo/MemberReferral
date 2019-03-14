@@ -1,0 +1,31 @@
+<design:component label="Fielo MRF - Member Referral">
+ 
+    <design:attribute label="Identify Member by Logged in User" name="loggedInMember" />
+    <design:attribute label="Use Search Box to find related Member" name="callSearchMember" description="If checked, component will start with a search box. If not checked, the component will try to read the community link and its query parameters (it expects Custom Setting - Inbound Link filled)." />
+    <design:attribute label="Email tool" name="emailTool" 
+                      description="Choose the preferred e-mail tool" datasource="SendGrid,Salesforce,Open email app"/>
+    
+    <design:attribute label="Default Program for Member Registration" name="defaultProgram" 
+                      description="" datasource="apex://customProgramPicklist"/>
+    
+    <design:attribute label="Custom Setting - Inbound Link" name="customSettingIn" required="false" description="It says to the component how to read the Community link accessed by the member (which kind of information it's going to be received)."/>
+    <design:attribute label="Custom Setting - Outbound Link" name="customSettingOut" required="true" description="It says to the component how to build the shareable link." />
+
+    <design:attribute label="Community url" name="communityURL" description="Enter the url of the community." 
+                      datasource="apex://customCommunitiesPicklist"/>
+    <design:attribute label="Registration Page Name" name="pageName" />
+    
+    <design:attribute label="Member Creation - External Class" name="MemberCreationExternalClass" />
+    <design:attribute label="Link Shortener - External Class" name="LinkShortenerClass" />
+    <design:attribute label="Link Shortener - ApiKey" name="LinkShortenerApiKey" />
+    
+    <design:attribute name="showFB" label="Facebook" />
+    <design:attribute name="showEmail" label="Email" />
+    <design:attribute name="showTW" label="Twitter" />
+    <design:attribute name="showWP" label="Whatsapp" />
+    <design:attribute name="showLK" label="Linkedin" />
+    <design:attribute name="showGO" label="Google+" />
+    <design:attribute name="showVI" label="Viber" />
+    <design:attribute name="showSMS" label="SMS" />
+    
+</design:component>

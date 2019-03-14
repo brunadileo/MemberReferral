@@ -1,0 +1,78 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global"
+                controller="MemberReferralController">
+        
+    <!--DESIGN RESOURCES-->
+    <aura:attribute name="loggedInMember" type="Boolean" default="true" access="global"/>
+    <aura:attribute name="callSearchMember" type="Boolean" default="false" access="global"/>
+    
+    <aura:attribute name="url" type="String" access="global"/>
+    
+    <aura:attribute name="customSettingIn" type="String" access="global"/>
+    <aura:attribute name="customSettingOut" type="String" access="global"/>
+    
+    <aura:attribute name="MemberCreationExternalClass" type="String" access="global"/>
+    <aura:attribute name="LinkShortenerClass" type="String" access="global"/>   
+    <aura:attribute name="LinkShortenerApiKey" type="String" access="global"/>   
+    
+    <aura:attribute name="pageName" type="String" access="global"/>    
+    <aura:attribute name="communityURL" type="String" access="global"/> 
+    <aura:attribute name="emailTool" type="String" default="Open email app" access="global"/>  
+    
+    <aura:attribute name="defaultProgram" type="String" access="global"/>
+    <aura:attribute name="createContact" type="Boolean" default="false"/>
+    <aura:attribute name="createLead" type="Boolean" default="false"/>
+    <aura:attribute name="createAccount" type="Boolean" default="false"/>
+    
+    <aura:attribute name="showFB" type="Boolean" access="global" default="true"/>
+    <aura:attribute name="showTW" type="Boolean" access="global" default="true" />
+    <aura:attribute name="showEmail" type="Boolean" access="global" default="true"/>
+    <aura:attribute name="showCopy" type="Boolean" default="true" access="global"/>
+    <aura:attribute name="showWP" type="Boolean" access="global" default="true"/>
+    <aura:attribute name="showLK" type="Boolean" access="global" default="true"/>
+    <aura:attribute name="showGO" type="Boolean" access="global" default="true"/>
+    <aura:attribute name="showVI" type="Boolean" access="global" default="true"/>
+    <aura:attribute name="showSMS" type="Boolean" access="global" default="true"/>
+    
+    <!--OTHER VARIABLES-->    
+    <aura:attribute name="member" type="String" access="global"/>
+    <aura:attribute name="mailto" type="String" access="global"/>
+    
+    <!--EVENTS-->
+    
+    <aura:handler event="FieloPLT:UpdateMemberEvent" action="{!c.getMember}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="searchMemberEvent" event="c:SearchMember" action="{!c.handleSearchMember}"/> 
+    
+    <!--BODY-->  
+    <aura:if isTrue="{! and(empty(v.member),v.callSearchMember)}">
+        <c:InitialMemberRegistration defaultProgram="{!v.defaultProgram}"
+                                     createContact="{!v.createContact}"
+                                     createLead="{!v.createLead}"
+                                     createAccount="{!v.createAccount}"
+                                     />
+        
+    </aura:if> 
+    
+    <aura:if isTrue="{! !empty(v.member)}">
+        
+        <c:ShareReferralLink url="{!v.url}"
+                             showFB="{!v.showFB}"
+                             showTW="{!v.showTW}"
+                             showEmail="{!v.showEmail}"
+                             showCopy="{!v.showCopy}"
+                             showWP="{!v.showWP}"
+                             showLK="{!v.showLK}"
+                             showGO="{!v.showGO}"
+                             showVI="{!v.showVI}"
+                             showSMS="{!v.showSMS}"
+                             communityURL="{!v.communityURL}"
+                             emailTool="{!v.emailTool}"
+                             member="{!v.member}"
+                             customSettingIn="{!v.customSettingIn}"
+                             customSettingOut="{!v.customSettingOut}"
+                             pageName="{!v.pageName}"
+                             LinkShortenerClass="{!v.LinkShortenerClass}"
+                             LinkShortenerApiKey="{!v.LinkShortenerApiKey}" />
+        
+    </aura:if>
+</aura:component>
