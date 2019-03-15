@@ -13,4 +13,16 @@
         <trackFeedHistory>false</trackFeedHistory>
         <type>Lookup</type>
     </fields>
+    <fields>
+        <fullName>ReferredBy__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Referred By</label>
+        <referenceTo>FieloPLT__Member__c</referenceTo>
+        <relationshipLabel>Contacts (Referred By)</relationshipLabel>
+        <relationshipName>Contacts1</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Lookup</type>
+    </fields>
 </CustomObject>

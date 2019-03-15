@@ -2,28 +2,27 @@
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>MemberReferral</fullName>
     <types>
-        <members>HttpMockCallout</members>
+        <members>BitlyIntegration</members>
+        <members>FacebookApi</members>
         <members>InitialMemberRegistrationController</members>
-        <members>InitialMemberRegistrationControllerTest</members>
-        <members>LinkShortener</members>
         <members>LinkShortener2</members>
         <members>MemberCreation</members>
         <members>MemberReferralController</members>
-        <members>MemberReferralControllerTest</members>
         <members>MemberRegistrationController</members>
-        <members>MemberRegistrationControllerTest</members>
         <members>MockUpFactory</members>
         <members>RecordCreationInterface</members>
         <members>ShareReferralLinkController</members>
         <members>ShareReferralLinkControllerTest</members>
+        <members>createAccount</members>
+        <members>createContact</members>
+        <members>createLead</members>
+        <members>createMember</members>
         <members>customCommunitiesPicklist</members>
         <members>customProgramPicklist</members>
         <name>ApexClass</name>
     </types>
     <types>
-        <members>FbLogin</members>
         <members>FetchData</members>
-        <members>GoogleLogin</members>
         <members>InitialMemberRegistration</members>
         <members>MemberReferral</members>
         <members>MemberRegistration</members>
@@ -32,12 +31,11 @@
         <name>AuraDefinitionBundle</name>
     </types>
     <types>
+        <members>Account.ReferredBy__c</members>
         <members>Contact.Member__c</members>
-        <members>FieloPLT__EmailAlert__c.ReferredBy__c</members>
-        <members>FieloPLT__Member__c.ReferredBy__c</members>
+        <members>Contact.ReferredBy__c</members>
         <members>FieloPLT__Settings__c.CurrentMemberId__c</members>
-        <members>FieloPLT__Tracker__c.ReferredBy__c</members>
-        <members>FieloPLT__Transaction__c.ReferredBy__c</members>
+        <members>Lead.ReferredBy__c</members>
         <members>ParametersSettings__c.FieldApiName__c</members>
         <members>ParametersSettings__c.LookupRelationship__c</members>
         <members>ParametersSettings__c.ObjectApiName__c</members>
@@ -78,13 +76,10 @@
     </types>
     <types>
         <members>Clipboard</members>
-        <members>CopyIcon</members>
         <members>EmailIcon</members>
         <members>Facebook</members>
-        <members>GmailIcon</members>
         <members>GooglePlus</members>
         <members>Linkedin</members>
-        <members>MemberReferral</members>
         <members>SmsIcon</members>
         <members>TwitterIcon</members>
         <members>ViberIcon</members>

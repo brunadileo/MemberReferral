@@ -3,14 +3,13 @@
     <fields>
         <fullName>ReferredBy__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Referred By</label>
         <referenceTo>FieloPLT__Member__c</referenceTo>
-        <relationshipLabel>Email Alerts (Referred By)</relationshipLabel>
-        <relationshipName>Email_Alerts</relationshipName>
+        <relationshipLabel>Leads</relationshipLabel>
+        <relationshipName>Leads</relationshipName>
         <required>false</required>
-        <trackTrending>false</trackTrending>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Lookup</type>
     </fields>
 </CustomObject>
