@@ -9,7 +9,7 @@ public class createLead implements RecordCreationInterface{
             l.Email = (String)fieldset.get('FieloPLT__Email__c');
             l.FirstName = (String)fieldset.get('FirstName');
             l.LastName = (String)fieldset.get('LastName');
-            l.FieloMRF__ReferredBy__c = (String)fieldset.get('FieloMRF__ReferredBy__c'); 
+            l.ReferredBy__c = (String)fieldset.get('ReferredBy__c'); 
             l.Status='Open - Not Contacted';
             l.Company=(String)fieldset.get('FirstName') +' '+(String)fieldset.get('LastName');
             

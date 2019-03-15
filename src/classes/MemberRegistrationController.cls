@@ -26,7 +26,7 @@ public without sharing class MemberRegistrationController {
                 fields.add(ps.FieldApiName__c);
                 queryFields.add(ps.FieldApiName__c);
                 qWhereFields.add(ps.FieldApiName__c+ ' = \''+ paramsMap.get(ps.Parameter__c)+'\'');
-                if(String.isBlank(objName) || objName == ps.FieloMRF__ObjectApiName__c) objName = ps.FieloMRF__ObjectApiName__c;
+                if(String.isBlank(objName) || objName == ps.ObjectApiName__c) objName = ps.ObjectApiName__c;
             }
         }
         System.debug(inboundMap);
@@ -153,9 +153,9 @@ public without sharing class MemberRegistrationController {
         req.setHeader('Content-Type', 'application/x-www-form-urlencoded');
         req.setEndpoint('https://accounts.google.com/o/oauth2/token');
         req.setBody('code='+token+'&'+
-                    'client_id='+sm.FieloMRF__GoogleClientId__c+'&'+
-                    'client_secret='+sm.FieloMRF__GoogleClientSecret__c+'&'+
-                    'redirect_uri='+sm.FieloMRF__GoogleRedirectURL__c+'&'+
+                    'client_id='+sm.GoogleClientId__c+'&'+
+                    'client_secret='+sm.GoogleClientSecret__c+'&'+
+                    'redirect_uri='+sm.GoogleRedirectURL__c+'&'+
                     'grant_type=authorization_code'
                    );
         req.setMethod('POST');

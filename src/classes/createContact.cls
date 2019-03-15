@@ -9,7 +9,7 @@ public class createContact implements RecordCreationInterface {
             c.Email = (String)fieldset.get('FieloPLT__Email__c');
             c.FirstName = (String)fieldset.get('FirstName');
             c.LastName = (String)fieldset.get('LastName');
-            c.FieloMRF__ReferredBy__c = (String) fieldset.get('FieloMRF__ReferralBy__c'); 
+            c.ReferredBy__c = (String) fieldset.get('ReferralBy__c'); 
             insert c;
             
             result.put('success', c.Id);

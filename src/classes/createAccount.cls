@@ -7,7 +7,7 @@ public class createAccount implements RecordCreationInterface {
         try{
             sp = Database.setSavepoint();               
             a.Name = (String)fieldset.get('FirstName') + ' ' + (String)fieldset.get('LastName');
-            a.FieloMRF__ReferredBy__c = (String) fieldset.get('FieloMRF__ReferredBy__c'); 
+            a.ReferredBy__c = (String) fieldset.get('ReferredBy__c'); 
             
             insert a;
             result.put('success', a.Id);
